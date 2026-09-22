@@ -1,0 +1,52 @@
+services:
+  postgres:
+    # Check https://hub.docker.com/r/pgvector/pgvector/tags for the current tag.
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      N8N_DB_PASSWORD: ${N8N_DB_PASSWORD}
+      KB_DB_PASSWORD: ${KB_DB_PASSWORD}
+    ports:
+      - "127.0.0.1:5432:5432"   # localhost only, so the retrieval service on the host can reach it
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  n8n:
+    # Pinned: n8n ships breaking changes often. Upgrade deliberately.
+    image: docker.n8n.io/n8nio/n8n:2.40.5
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:5678:5678"
+    environment:
+      # Verify these names against the current n8n docs (Hosting > Configuration > Environment variables).
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: n8n
+      DB_POSTGRESDB_PASSWORD: ${N8N_DB_PASSWORD}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      GENERIC_TIMEZONE: Europe/Berlin
+      TZ: Europe/Berlin
+      N8N_DIAGNOSTICS_ENABLED: "false"     # no telemetry to n8n (GDPR note for GOVERNANCE.md)
+      EXECUTIONS_DATA_PRUNE: "true"         # execution logs contain payloads = personal data -> retention limit
+      EXECUTIONS_DATA_MAX_AGE: "336"        # hours (14 days)
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # lets n8n call the Flask service running on the Mac
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  pg_data:
+  n8n_data:

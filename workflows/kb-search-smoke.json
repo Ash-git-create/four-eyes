@@ -1,0 +1,98 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kb-search",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "120c827f-b077-45f5-9a57-812a9f12c1e4",
+      "name": "kb-search-smoke",
+      "webhookId": "f7c40dfe-5601-42ef-bbbb-44996793c89c",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "UB8t9QycP83erwlx",
+          "name": "kb-search webhook key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/search",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"query\": {{ JSON.stringify($json.body.query) }}, \"k\": 5 }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "aa6cc980-34c1-4862-bb37-bd7cfdda3fbe",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "e584a275-8836-4195-9d95-4557a4ac7594",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "kb-search-smoke": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "08beafb6-0d1b-4592-aa76-d22525c748ab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "edc00841e3653d7973bf04928b2284dcf518a3a08ef0dc5ebf8036cb59c75d26"
+  },
+  "nodeGroups": [],
+  "id": "0m73gSHQxo6anYn5",
+  "tags": []
+}
