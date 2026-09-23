@@ -58,3 +58,33 @@ def vector_search(conn: psycopg.Connection, query_vec: list[float], limit: int,
     ).fetchall()
     cols = ["chunk_id", "source_id", "source_type", "title", "text", "source_url", "score"]
     return [dict(zip(cols, r)) for r in rows]
+
+
+def replace_claims(conn: psycopg.Connection, claims: list, vectors: dict[str, list[float]]) -> None:
+    """Full rebuild, like replace_all. vectors holds embeddings for authorised claims only."""
+    with conn.transaction():
+        conn.execute("TRUNCATE claims")
+        with conn.cursor() as cur:
+            cur.executemany(
+                """INSERT INTO claims (policy_item_code, entry_id, claim_type, subject, claim,
+                                       status, conditions_of_use, health_relationship,
+                                       efsa_reference, embedding)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                [(c.policy_item_code, c.entry_id, c.claim_type, c.subject, c.claim, c.status,
+                  c.conditions_of_use, c.health_relationship, c.efsa_reference,
+                  np.array(v) if (v := vectors.get(c.policy_item_code)) is not None else None)
+                 for c in claims],
+            )
+
+
+def nearest_authorised_claim(conn: psycopg.Connection, query_vec: list[float]) -> dict | None:
+    v = np.array(query_vec)
+    row = conn.execute(
+        """SELECT policy_item_code, entry_id, subject, claim, conditions_of_use,
+                  1 - (embedding <=> %s) AS score
+           FROM claims WHERE status = 'authorised' AND embedding IS NOT NULL
+           ORDER BY embedding <=> %s LIMIT 1""",
+        (v, v),
+    ).fetchone()
+    cols = ["policy_item_code", "entry_id", "subject", "claim", "conditions_of_use", "score"]
+    return dict(zip(cols, row)) if row else None

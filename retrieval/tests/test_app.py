@@ -1,6 +1,7 @@
 import pytest
 
 from retrieval.app import create_app
+from retrieval.claims import ClaimsChecker
 from retrieval.search import Searcher
 
 from fakes import FakeEmbedder, FakeReranker, FakeVectorSearch, make_hits
@@ -11,7 +12,10 @@ def client():
     hits = make_hits(3, "policy", "p") + make_hits(3, "product", "x")
     searcher = Searcher(FakeEmbedder(), FakeReranker({h["text"]: 0.0 for h in hits}),
                         FakeVectorSearch(hits), candidates=6)
-    return create_app(searcher).test_client()
+    checker = ClaimsChecker(FakeEmbedder(), lambda vec: {"policy_item_code": "POL-HC-1", "entry_id": "854",
+                                                        "subject": "Glucomannan", "claim": "contributes to weight loss",
+                                                        "conditions_of_use": None, "score": 0.5})
+    return create_app(searcher, checker).test_client()
 
 
 def test_health(client):
@@ -57,3 +61,16 @@ def test_redact_endpoint_returns_counts_not_values(client):
 
 def test_redact_rejects_non_string(client):
     assert client.post("/redact", json={"text": 5}).status_code == 400
+
+
+def test_claims_check_flags_unmatched_health_sentence(client):
+    body = client.post("/claims-check", json={"draft": "This shake supports your immune system. It costs 20 euro."}).get_json()
+    assert body["flagged_count"] == 1
+    flagged, plain = body["sentences"]
+    assert flagged["flagged"] is True and flagged["best_match"]["entry_id"] == "854"
+    assert plain["health_claim_like"] is False and plain["best_match"] is None
+    assert "Not a compliance check" in body["disclaimer"]
+
+
+def test_claims_check_rejects_empty_draft(client):
+    assert client.post("/claims-check", json={"draft": "  "}).status_code == 400

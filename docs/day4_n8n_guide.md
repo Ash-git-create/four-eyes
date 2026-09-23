@@ -22,7 +22,7 @@ Webhook ─▶ Set run_id ─▶ Respond "received" (202)
          Claude (HTTP) ─▶ log_model_call() ─▶ audit: drafted                 │
                 │                                                            │
                 ▼                                                            │
-         claims check (Day 4b, needs the register) ◀────────────────────────┘
+         /claims-check (flags unmatched health statements) ◀───────────────┘
                 │
                 ▼
          Wait for approval ─▶ IF approved ─▶ send + audit: approved, sent
@@ -101,8 +101,11 @@ SELECT log_model_call($1, $2, $3, $4, $5, $6, $7) AS cost_usd
 ```
 Parameters: run_id, **`$json.model` from the response** (the model that actually answered), and the four usage numbers plus latency. It raises an error on an unpriced model, so an unknown model can't silently skip the budget.
 
-### 11. Claims check: Day 4b
-Needs the EU register Excel (`data/raw/`). It will be a `/claims-check` endpoint that flags health statements in the draft that don't match an authorised claim. It's a heuristic flag for the approver, never "compliance".
+### 11. HTTP Request → `POST /claims-check`
+Body: `{ "draft": <the text Claude wrote> }`. Returns each sentence with `health_claim_like`, `flagged`, and the closest authorised register entry (`policy_item_code`, `entry_id`, `claim`, `score`).
+Pass `flagged_count` and the flagged sentences to the approver, with the closest authorised claim next to each, so they can see what the wording would have to look like.
+The register (2,337 records, 269 authorised) is loaded with `uv run ingest-claims`.
+**Never call this compliance.** It is a similarity flag against a register, with a provisional threshold. The response carries that disclaimer; keep it in the approval message.
 
 ### 12. Approval: Wait node
 ⚠️ This is the part to read up on most carefully in the 2.40 docs: the Wait node's "On Webhook Call" resume mode and `$execution.resumeUrl`, and the "Send and Wait for Response" operation on the email/Slack nodes.

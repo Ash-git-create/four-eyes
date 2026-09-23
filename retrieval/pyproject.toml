@@ -17,6 +17,7 @@ dependencies = [
 [project.scripts]
 retrieval = "retrieval.app:main"
 ingest = "retrieval.ingest:main"
+ingest-claims = "retrieval.ingest_claims:main"
 evaluate = "retrieval.evaluation:main"
 migrate = "retrieval.store:migrate"
 

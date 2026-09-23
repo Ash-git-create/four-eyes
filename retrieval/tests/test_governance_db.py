@@ -78,6 +78,11 @@ def test_log_model_call_includes_cache_tokens(n8n):
     assert float(cost) == pytest.approx(0.20)
 
 
+def test_free_tier_model_logs_zero_cost(n8n):
+    cost = n8n.execute("SELECT log_model_call('r1', 'openai/gpt-oss-120b', 3000, 300)").fetchone()[0]
+    assert float(cost) == 0.0
+
+
 def test_log_model_call_rejects_unpriced_model(n8n):
     with pytest.raises(psycopg.errors.ForeignKeyViolation, match="no price"):
         n8n.execute("SELECT log_model_call('r1', 'gpt-4o', 10, 10)")
@@ -103,5 +108,5 @@ def test_budget_ignores_yesterdays_spend(owner, n8n):
 def test_schema_is_idempotent(schema):
     with store.connect(config.database_url(), search_path=schema) as c:
         store.apply_schema(c)
-        assert c.execute("SELECT count(*) FROM model_prices").fetchone()[0] == 3
+        assert c.execute("SELECT count(*) FROM model_prices").fetchone()[0] == 4
         assert c.execute("SELECT count(*) FROM budget").fetchone()[0] == 1

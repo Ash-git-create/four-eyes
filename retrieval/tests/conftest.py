@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).parent))  # lets tests import fakes.py
 
 from retrieval import config, store  # noqa: E402
 
-TABLES = ("chunks", "audit_log", "model_calls", "model_prices", "budget")
+TABLES = ("chunks", "claims", "audit_log", "model_calls", "model_prices", "budget")
 
 
 @pytest.fixture

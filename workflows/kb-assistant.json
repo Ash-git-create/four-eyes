@@ -1,0 +1,1857 @@
+{
+  "updatedAt": "2026-09-23T16:58:32.089Z",
+  "createdAt": "2026-09-23T13:24:29.235Z",
+  "id": "QvHrO0gVwDK1KBH2",
+  "name": "kb_assistant",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kb-assistant",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "70bab3c0-9f77-4ea2-a0ef-0f00e92b91d9",
+      "name": "Webhook",
+      "webhookId": "70c5ffec-c1fc-4070-8055-5ae081c27be0",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "UB8t9QycP83erwlx",
+          "name": "kb-search webhook key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "90c50edc-0e0f-4e50-a8b6-4183e3f08943",
+              "name": "run_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "076861a5-6802-4526-8ded-ada93e44084a",
+      "name": "Set run_id"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"received\", \"run_id\": \"{{ $json.run_id }}\" }",
+        "options": {
+          "responseCode": 202
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "d5925863-941d-4f41-bfa5-0fc74a6c51f3",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/redact",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"text\": {{ JSON.stringify($('Set run_id').item.json.body.question) }} }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "a7fc230a-f353-4312-8eff-8cf2f974db9f",
+      "name": "Redact"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'request_received', 'system', $2::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ redactions: $json.redactions }) ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        896,
+        0
+      ],
+      "id": "66e8ad37-89da-4478-a2b8-1559db28f586",
+      "name": "Audit: received",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/search",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"query\": {{ JSON.stringify($('Redact').item.json.text) }}, \"k\": 5, \"mode\": \"balanced\" }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        256
+      ],
+      "id": "63eb5483-5b40-420e-98bb-c419ae56f0f7",
+      "name": "Search"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a8125a2a-3c8c-4e3a-a73b-0f297c774fa9",
+              "leftValue": "={{ $json.results[0].rerank_score }}",
+              "rightValue": -5,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        256
+      ],
+      "id": "2bbd5ea9-309c-482b-9585-2422d2e18a78",
+      "name": "Low confidence?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "86b9f90f-e22d-4f35-b788-80a7c18fa864",
+              "name": "",
+              "value": "Vielen Dank für Ihre Nachricht. Wir können Ihre Frage mit unseren vorliegenden Informationen nicht sicher beantworten. Eine Kollegin oder ein Kollege meldet sich bei Ihnen.",
+              "type": "string"
+            },
+            {
+              "id": "4219c70e-2b56-452f-9522-d95c5c325017",
+              "name": "flagged_claims",
+              "value": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        240
+      ],
+      "id": "3b9a0030-a100-4873-a191-0abdd3267097",
+      "name": "Cannot answer"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM budget_status()",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        288,
+        592
+      ],
+      "id": "12ddeb2e-522b-4576-acf3-77184c7bb3e2",
+      "name": "Budget",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a33c8bbe-ed4b-4fe3-a652-0eddd10b2a0a",
+              "leftValue": "={{ $json.allowed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        512,
+        592
+      ],
+      "id": "261d9aaa-c995-4fcb-9632-cc3144c117d3",
+      "name": "Budget OK?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'budget_blocked', 'system', $2::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ spent_today_usd: $json.spent_today_usd, daily_cap_usd: $json.daily_cap_usd }) ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        672,
+        832
+      ],
+      "id": "518a0ed3-848c-47aa-86d4-13025cfef5bb",
+      "name": "Audit: budget blocked:",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build the full LLM request body here, so the HTTP node's JSON field stays one expression.\nconst SYSTEM = `You draft replies to customer-service questions for a sports-nutrition online shop. A human approver reads every draft before anything is sent, so your job is a correct, checkable draft, not a final message.\n\nYou receive the customer's question (personal data already replaced by placeholders such as [EMAIL] or [PHONE]) and a numbered set of source chunks, each with a chunk id.\n\nHow to answer:\n- Use only facts stated in the source chunks. Do not use general knowledge about products, nutrition, or law, even when you are confident.\n- After every factual sentence, cite the chunk id(s) it comes from in square brackets, for example [sample-returns#opened-products] or [off:4001234567890].\n- If the chunks do not answer the question, or only partly answer it, say plainly what you cannot answer from the available information and suggest the customer contact customer service. Do not guess, and do not fill gaps.\n- Product data comes from Open Food Facts and can be incomplete or out of date. When you state allergens or nutrition values, add that the label on the product itself takes priority.\n- Do not give medical advice or say whether a product is safe for someone's allergy or condition. Point to the product label and a doctor instead.\n- Do not describe health effects of any product or ingredient (\"boosts recovery\", \"supports your immune system\") unless a source chunk states it. A separate check compares health statements in your draft against the EU register of authorised claims, and the approver sees the result.\n- Reply in the language of the customer's question. Keep it short: a few sentences, no marketing tone.\n- Leave placeholders such as [EMAIL] exactly as they are. Never invent names, order numbers, or contact details.`;\n\nconst q = $('Redact').first().json.text;\nconst chunks = $('Search').first().json.results\n  .map((r, i) => `[${i + 1}] chunk_id: ${r.chunk_id}\\n${r.text}`).join('\\n\\n');\n\nreturn [{ json: { requestBody: {\n  model: 'openai/gpt-oss-120b',\n  max_tokens: 2000,\n  messages: [\n    { role: 'system', content: SYSTEM },\n    { role: 'user', content: `Question:\\n${q}\\n\\nSources:\\n${chunks}` },\n  ],\n} } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        576
+      ],
+      "id": "d9bd259e-b377-4b01-be29-917cb42d0c4f",
+      "name": "Build prompt"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f0c55901-096d-4958-8193-289d13248b1b",
+              "name": "draft",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            },
+            {
+              "id": "06bd3f28-c01a-4adc-a082-51bce2865bd3",
+              "name": "stop_reason",
+              "value": "={{ $json.choices[0].finish_reason }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1184,
+        576
+      ],
+      "id": "6ba90401-db77-4084-a7fa-22a3b7c86a25",
+      "name": "Draft"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/claims-check",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"draft\": {{ JSON.stringify($('Draft').item.json.draft) }} }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1584,
+        576
+      ],
+      "id": "6acd30f0-0777-41c2-acad-c44ef12e0459",
+      "name": "Claims check"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.requestBody) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        976,
+        576
+      ],
+      "id": "2b7fa716-e3f5-4be3-8d18-e175c6c36cc5",
+      "name": "LLM Draft",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "lO7w7SdKxcN74eDd",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'drafted', 'system', $2::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ model: $('Draft').item.json.model, cost_usd: $('Log model call').item.json.cost_usd, flagged_claims: $json.flagged_count }) ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        1776,
+        576
+      ],
+      "id": "bd54b28f-e2ff-4993-bef0-cc1d8b64db37",
+      "name": "Audit : drafted",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT log_model_call($1, $2, $3, $4, $5, $6) AS cost_usd",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, $json.model, $json.usage.prompt_tokens, $json.usage.completion_tokens, 0, 0 ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        1376,
+        576
+      ],
+      "id": "4a7c49fe-1fb0-4aea-bf63-b1e50c708ff7",
+      "name": "Log model call",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e6cf7572-04ca-4799-9eff-1db0f75194e6",
+              "name": "draft",
+              "value": "={{ $('Draft').item.json.draft }}",
+              "type": "string"
+            },
+            {
+              "id": "9f78c0d8-97db-4dec-a34a-a350e119c0e5",
+              "name": "flagged claims",
+              "value": "={{ $('Claims check').item.json.flagged_count }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1968,
+        576
+      ],
+      "id": "63451370-6093-48bd-becb-43dbe5648fb7",
+      "name": "Draft for approval"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        752,
+        224
+      ],
+      "id": "4e2816c2-a1cd-46bc-80e9-1fe29ab829e8",
+      "name": "Approval input"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc9d20f6-c2c5-4cc3-8407-30669dcbe505",
+              "name": "=approval_url",
+              "value": "={{ $execution.resumeUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        976,
+        224
+      ],
+      "id": "8cd1c5c2-4b5a-4660-9b12-3775d8c379e8",
+      "name": "Approval link"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'approval_requested', 'system', $2::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ draft: $json.draft, flagged_claims: $json.flagged_claims }) ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        1200,
+        224
+      ],
+      "id": "93bdd08d-af75-468a-ad16-3535bd4bdf20",
+      "name": "Audit: approval requested",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "httpMethod": "POST",
+        "limitWaitTime": true,
+        "resumeAmount": 24,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1424,
+        224
+      ],
+      "id": "208de1fe-6064-456e-a0a2-2a8199c1a21d",
+      "name": "Approval",
+      "webhookId": "024fe9b1-fa84-4a09-bbdd-b82a0a1f9aae"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "bbd5ffb6-3ead-4af2-b833-220c1a8a5deb",
+              "leftValue": "={{ $json.body.decision }}",
+              "rightValue": "approve",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1648,
+        224
+      ],
+      "id": "95ec3c6c-e7e9-49a0-8ef5-5c6551e95266",
+      "name": "Approved?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'approved', $2, '{}'::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, $json.body.approver ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        1872,
+        128
+      ],
+      "id": "9c8902ae-f77e-475b-999d-4d7a68eafb50",
+      "name": "Audit: approved",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'rejected', $2, $3::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, $json.body.approver, JSON.stringify({ reason: $json.body.reason }) ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        1872,
+        320
+      ],
+      "id": "c997853b-b93e-442d-bd6a-23e38186da91",
+      "name": "Audit: rejected",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'sent', 'system', '{}'::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        2096,
+        128
+      ],
+      "id": "69aed847-dd5b-4f47-b5f7-63acdd035397",
+      "name": "Sent",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set run_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set run_id": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Redact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redact": {
+      "main": [
+        [
+          {
+            "node": "Audit: received",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit: received": {
+      "main": [
+        [
+          {
+            "node": "Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search": {
+      "main": [
+        [
+          {
+            "node": "Low confidence?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Low confidence?": {
+      "main": [
+        [
+          {
+            "node": "Cannot answer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Budget",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Budget": {
+      "main": [
+        [
+          {
+            "node": "Budget OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Budget OK?": {
+      "main": [
+        [
+          {
+            "node": "Build prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit: budget blocked:",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build prompt": {
+      "main": [
+        [
+          {
+            "node": "LLM Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft": {
+      "main": [
+        [
+          {
+            "node": "Log model call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claims check": {
+      "main": [
+        [
+          {
+            "node": "Audit : drafted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM Draft": {
+      "main": [
+        [
+          {
+            "node": "Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log model call": {
+      "main": [
+        [
+          {
+            "node": "Claims check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit : drafted": {
+      "main": [
+        [
+          {
+            "node": "Draft for approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cannot answer": {
+      "main": [
+        [
+          {
+            "node": "Approval input",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Draft for approval": {
+      "main": [
+        [
+          {
+            "node": "Approval input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval input": {
+      "main": [
+        [
+          {
+            "node": "Approval link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval link": {
+      "main": [
+        [
+          {
+            "node": "Audit: approval requested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit: approval requested": {
+      "main": [
+        [
+          {
+            "node": "Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval": {
+      "main": [
+        [
+          {
+            "node": "Approved?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved?": {
+      "main": [
+        [
+          {
+            "node": "Audit: approved",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit: rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit: approved": {
+      "main": [
+        [
+          {
+            "node": "Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "wacaqtaVrNtfEgGr",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "377c88b1-2909-4a83-97f6-37f7ab990d14",
+  "activeVersionId": "377c88b1-2909-4a83-97f6-37f7ab990d14",
+  "versionCounter": 239,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "shared": [
+    {
+      "updatedAt": "2026-09-23T13:24:29.235Z",
+      "createdAt": "2026-09-23T13:24:29.235Z",
+      "role": "workflow:owner",
+      "workflowId": "QvHrO0gVwDK1KBH2",
+      "projectId": "5o3F2chFMU7H6bcD",
+      "project": {
+        "updatedAt": "2026-09-22T13:18:47.663Z",
+        "createdAt": "2026-09-22T13:15:11.297Z",
+        "id": "5o3F2chFMU7H6bcD",
+        "name": "Owner Owner4test <ashwin.achu00@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "33d65afa-8f00-4847-aaa6-453d6d43d611"
+      }
+    }
+  ],
+  "tags": [],
+  "parentFolder": null,
+  "activeVersion": {
+    "updatedAt": "2026-09-23T17:00:39.152Z",
+    "createdAt": "2026-09-23T16:48:56.810Z",
+    "versionId": "377c88b1-2909-4a83-97f6-37f7ab990d14",
+    "workflowId": "QvHrO0gVwDK1KBH2",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "kb-assistant",
+          "authentication": "headerAuth",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "70bab3c0-9f77-4ea2-a0ef-0f00e92b91d9",
+        "name": "Webhook",
+        "webhookId": "70c5ffec-c1fc-4070-8055-5ae081c27be0",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "UB8t9QycP83erwlx",
+            "name": "kb-search webhook key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "90c50edc-0e0f-4e50-a8b6-4183e3f08943",
+                "name": "run_id",
+                "value": "={{ $execution.id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [
+          224,
+          0
+        ],
+        "id": "076861a5-6802-4526-8ded-ada93e44084a",
+        "name": "Set run_id"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={ \"status\": \"received\", \"run_id\": \"{{ $json.run_id }}\" }",
+          "options": {
+            "responseCode": 202
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          448,
+          0
+        ],
+        "id": "d5925863-941d-4f41-bfa5-0fc74a6c51f3",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://host.docker.internal:8000/redact",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={ \"text\": {{ JSON.stringify($('Set run_id').item.json.body.question) }} }",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          672,
+          0
+        ],
+        "id": "a7fc230a-f353-4312-8eff-8cf2f974db9f",
+        "name": "Redact"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'request_received', 'system', $2::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ redactions: $json.redactions }) ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          896,
+          0
+        ],
+        "id": "66e8ad37-89da-4478-a2b8-1559db28f586",
+        "name": "Audit: received",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://host.docker.internal:8000/search",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={ \"query\": {{ JSON.stringify($('Redact').item.json.text) }}, \"k\": 5, \"mode\": \"balanced\" }",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          0,
+          256
+        ],
+        "id": "63eb5483-5b40-420e-98bb-c419ae56f0f7",
+        "name": "Search"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "a8125a2a-3c8c-4e3a-a73b-0f297c774fa9",
+                "leftValue": "={{ $json.results[0].rerank_score }}",
+                "rightValue": -5,
+                "operator": {
+                  "type": "number",
+                  "operation": "lt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          224,
+          256
+        ],
+        "id": "2bbd5ea9-309c-482b-9585-2422d2e18a78",
+        "name": "Low confidence?"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "86b9f90f-e22d-4f35-b788-80a7c18fa864",
+                "name": "",
+                "value": "Vielen Dank für Ihre Nachricht. Wir können Ihre Frage mit unseren vorliegenden Informationen nicht sicher beantworten. Eine Kollegin oder ein Kollege meldet sich bei Ihnen.",
+                "type": "string"
+              },
+              {
+                "id": "4219c70e-2b56-452f-9522-d95c5c325017",
+                "name": "flagged_claims",
+                "value": 0,
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [
+          448,
+          240
+        ],
+        "id": "3b9a0030-a100-4873-a191-0abdd3267097",
+        "name": "Cannot answer"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT * FROM budget_status()",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          288,
+          592
+        ],
+        "id": "12ddeb2e-522b-4576-acf3-77184c7bb3e2",
+        "name": "Budget",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "a33c8bbe-ed4b-4fe3-a652-0eddd10b2a0a",
+                "leftValue": "={{ $json.allowed }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          512,
+          592
+        ],
+        "id": "261d9aaa-c995-4fcb-9632-cc3144c117d3",
+        "name": "Budget OK?"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'budget_blocked', 'system', $2::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ spent_today_usd: $json.spent_today_usd, daily_cap_usd: $json.daily_cap_usd }) ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          672,
+          832
+        ],
+        "id": "518a0ed3-848c-47aa-86d4-13025cfef5bb",
+        "name": "Audit: budget blocked:",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Build the full LLM request body here, so the HTTP node's JSON field stays one expression.\nconst SYSTEM = `You draft replies to customer-service questions for a sports-nutrition online shop. A human approver reads every draft before anything is sent, so your job is a correct, checkable draft, not a final message.\n\nYou receive the customer's question (personal data already replaced by placeholders such as [EMAIL] or [PHONE]) and a numbered set of source chunks, each with a chunk id.\n\nHow to answer:\n- Use only facts stated in the source chunks. Do not use general knowledge about products, nutrition, or law, even when you are confident.\n- After every factual sentence, cite the chunk id(s) it comes from in square brackets, for example [sample-returns#opened-products] or [off:4001234567890].\n- If the chunks do not answer the question, or only partly answer it, say plainly what you cannot answer from the available information and suggest the customer contact customer service. Do not guess, and do not fill gaps.\n- Product data comes from Open Food Facts and can be incomplete or out of date. When you state allergens or nutrition values, add that the label on the product itself takes priority.\n- Do not give medical advice or say whether a product is safe for someone's allergy or condition. Point to the product label and a doctor instead.\n- Do not describe health effects of any product or ingredient (\"boosts recovery\", \"supports your immune system\") unless a source chunk states it. A separate check compares health statements in your draft against the EU register of authorised claims, and the approver sees the result.\n- Reply in the language of the customer's question. Keep it short: a few sentences, no marketing tone.\n- Leave placeholders such as [EMAIL] exactly as they are. Never invent names, order numbers, or contact details.`;\n\nconst q = $('Redact').first().json.text;\nconst chunks = $('Search').first().json.results\n  .map((r, i) => `[${i + 1}] chunk_id: ${r.chunk_id}\\n${r.text}`).join('\\n\\n');\n\nreturn [{ json: { requestBody: {\n  model: 'openai/gpt-oss-120b',\n  max_tokens: 2000,\n  messages: [\n    { role: 'system', content: SYSTEM },\n    { role: 'user', content: `Question:\\n${q}\\n\\nSources:\\n${chunks}` },\n  ],\n} } }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          752,
+          576
+        ],
+        "id": "d9bd259e-b377-4b01-be29-917cb42d0c4f",
+        "name": "Build prompt"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f0c55901-096d-4958-8193-289d13248b1b",
+                "name": "draft",
+                "value": "={{ $json.choices[0].message.content }}",
+                "type": "string"
+              },
+              {
+                "id": "06bd3f28-c01a-4adc-a082-51bce2865bd3",
+                "name": "stop_reason",
+                "value": "={{ $json.choices[0].finish_reason }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [
+          1184,
+          576
+        ],
+        "id": "6ba90401-db77-4084-a7fa-22a3b7c86a25",
+        "name": "Draft"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://host.docker.internal:8000/claims-check",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={ \"draft\": {{ JSON.stringify($('Draft').item.json.draft) }} }",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          1584,
+          576
+        ],
+        "id": "6acd30f0-0777-41c2-acad-c44ef12e0459",
+        "name": "Claims check"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.groq.com/openai/v1/chat/completions",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify($json.requestBody) }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          976,
+          576
+        ],
+        "id": "2b7fa716-e3f5-4be3-8d18-e175c6c36cc5",
+        "name": "LLM Draft",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "lO7w7SdKxcN74eDd",
+            "name": "Header Auth account 2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'drafted', 'system', $2::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ model: $('Draft').item.json.model, cost_usd: $('Log model call').item.json.cost_usd, flagged_claims: $json.flagged_count }) ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          1776,
+          576
+        ],
+        "id": "bd54b28f-e2ff-4993-bef0-cc1d8b64db37",
+        "name": "Audit : drafted",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT log_model_call($1, $2, $3, $4, $5, $6) AS cost_usd",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, $json.model, $json.usage.prompt_tokens, $json.usage.completion_tokens, 0, 0 ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          1376,
+          576
+        ],
+        "id": "4a7c49fe-1fb0-4aea-bf63-b1e50c708ff7",
+        "name": "Log model call",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e6cf7572-04ca-4799-9eff-1db0f75194e6",
+                "name": "draft",
+                "value": "={{ $('Draft').item.json.draft }}",
+                "type": "string"
+              },
+              {
+                "id": "9f78c0d8-97db-4dec-a34a-a350e119c0e5",
+                "name": "flagged claims",
+                "value": "={{ $('Claims check').item.json.flagged_count }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [
+          1968,
+          576
+        ],
+        "id": "63451370-6093-48bd-becb-43dbe5648fb7",
+        "name": "Draft for approval"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          752,
+          224
+        ],
+        "id": "4e2816c2-a1cd-46bc-80e9-1fe29ab829e8",
+        "name": "Approval input"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dc9d20f6-c2c5-4cc3-8407-30669dcbe505",
+                "name": "=approval_url",
+                "value": "={{ $execution.resumeUrl }}",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [
+          976,
+          224
+        ],
+        "id": "8cd1c5c2-4b5a-4660-9b12-3775d8c379e8",
+        "name": "Approval link"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'approval_requested', 'system', $2::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ draft: $json.draft, flagged_claims: $json.flagged_claims }) ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          1200,
+          224
+        ],
+        "id": "93bdd08d-af75-468a-ad16-3535bd4bdf20",
+        "name": "Audit: approval requested",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resume": "webhook",
+          "httpMethod": "POST",
+          "limitWaitTime": true,
+          "resumeAmount": 24,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1424,
+          224
+        ],
+        "id": "208de1fe-6064-456e-a0a2-2a8199c1a21d",
+        "name": "Approval",
+        "webhookId": "024fe9b1-fa84-4a09-bbdd-b82a0a1f9aae"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "bbd5ffb6-3ead-4af2-b833-220c1a8a5deb",
+                "leftValue": "={{ $json.body.decision }}",
+                "rightValue": "approve",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1648,
+          224
+        ],
+        "id": "95ec3c6c-e7e9-49a0-8ef5-5c6551e95266",
+        "name": "Approved?"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'approved', $2, '{}'::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, $json.body.approver ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          1872,
+          128
+        ],
+        "id": "9c8902ae-f77e-475b-999d-4d7a68eafb50",
+        "name": "Audit: approved",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'rejected', $2, $3::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, $json.body.approver, JSON.stringify({ reason: $json.body.reason }) ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          1872,
+          320
+        ],
+        "id": "c997853b-b93e-442d-bd6a-23e38186da91",
+        "name": "Audit: rejected",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'sent', 'system', '{}'::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          2096,
+          128
+        ],
+        "id": "69aed847-dd5b-4f47-b5f7-63acdd035397",
+        "name": "Sent",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Set run_id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set run_id": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Respond to Webhook": {
+        "main": [
+          [
+            {
+              "node": "Redact",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Redact": {
+        "main": [
+          [
+            {
+              "node": "Audit: received",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Audit: received": {
+        "main": [
+          [
+            {
+              "node": "Search",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Search": {
+        "main": [
+          [
+            {
+              "node": "Low confidence?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Low confidence?": {
+        "main": [
+          [
+            {
+              "node": "Cannot answer",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Budget",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Budget": {
+        "main": [
+          [
+            {
+              "node": "Budget OK?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Budget OK?": {
+        "main": [
+          [
+            {
+              "node": "Build prompt",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Audit: budget blocked:",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build prompt": {
+        "main": [
+          [
+            {
+              "node": "LLM Draft",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Draft": {
+        "main": [
+          [
+            {
+              "node": "Log model call",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Claims check": {
+        "main": [
+          [
+            {
+              "node": "Audit : drafted",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "LLM Draft": {
+        "main": [
+          [
+            {
+              "node": "Draft",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log model call": {
+        "main": [
+          [
+            {
+              "node": "Claims check",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Audit : drafted": {
+        "main": [
+          [
+            {
+              "node": "Draft for approval",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cannot answer": {
+        "main": [
+          [
+            {
+              "node": "Approval input",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Draft for approval": {
+        "main": [
+          [
+            {
+              "node": "Approval input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Approval input": {
+        "main": [
+          [
+            {
+              "node": "Approval link",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Approval link": {
+        "main": [
+          [
+            {
+              "node": "Audit: approval requested",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Audit: approval requested": {
+        "main": [
+          [
+            {
+              "node": "Approval",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Approval": {
+        "main": [
+          [
+            {
+              "node": "Approved?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Approved?": {
+        "main": [
+          [
+            {
+              "node": "Audit: approved",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Audit: rejected",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Audit: approved": {
+        "main": [
+          [
+            {
+              "node": "Sent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Owner Owner4test",
+    "name": "V1",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T17:00:39.150Z",
+        "id": 2,
+        "workflowId": "QvHrO0gVwDK1KBH2",
+        "versionId": "377c88b1-2909-4a83-97f6-37f7ab990d14",
+        "event": "activated",
+        "userId": "33d65afa-8f00-4847-aaa6-453d6d43d611"
+      }
+    ]
+  },
+  "scopes": [
+    "execution:reveal",
+    "workflow:create",
+    "workflow:delete",
+    "workflow:disableRedaction",
+    "workflow:enableRedaction",
+    "workflow:execute",
+    "workflow:execute-chat",
+    "workflow:export",
+    "workflow:import",
+    "workflow:list",
+    "workflow:move",
+    "workflow:publish",
+    "workflow:read",
+    "workflow:share",
+    "workflow:unpublish",
+    "workflow:unshare",
+    "workflow:update"
+  ],
+  "checksum": "fbc9da0f0274511cb46d929ba597bf275a0dfc44965430b142ffdb443a35a1b1"
+}

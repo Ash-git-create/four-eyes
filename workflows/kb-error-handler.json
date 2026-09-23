@@ -1,0 +1,185 @@
+{
+  "updatedAt": "2026-09-23T16:55:42.966Z",
+  "createdAt": "2026-09-23T16:54:30.401Z",
+  "id": "wacaqtaVrNtfEgGr",
+  "name": "kb-error-handler",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4ca7088e-8080-43f9-8270-c9f408382f81",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'error', 'system', $2::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $json.execution.id, JSON.stringify({ workflow: $json.workflow.name, node: $json.execution.lastNodeExecuted, message: $json.execution.error?.message }) ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "8cb660db-cdf5-43b4-a599-4d5e68d0da43",
+      "name": "Audit: error",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Audit: error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "3e1cd528-5cd5-4428-b118-7a64c9d80b02",
+  "activeVersionId": "3e1cd528-5cd5-4428-b118-7a64c9d80b02",
+  "versionCounter": 6,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "shared": [
+    {
+      "updatedAt": "2026-09-23T16:54:30.401Z",
+      "createdAt": "2026-09-23T16:54:30.401Z",
+      "role": "workflow:owner",
+      "workflowId": "wacaqtaVrNtfEgGr",
+      "projectId": "5o3F2chFMU7H6bcD",
+      "project": {
+        "updatedAt": "2026-09-22T13:18:47.663Z",
+        "createdAt": "2026-09-22T13:15:11.297Z",
+        "id": "5o3F2chFMU7H6bcD",
+        "name": "Owner Owner4test <ashwin.achu00@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "33d65afa-8f00-4847-aaa6-453d6d43d611"
+      }
+    }
+  ],
+  "tags": [],
+  "parentFolder": null,
+  "activeVersion": {
+    "updatedAt": "2026-09-23T16:58:10.616Z",
+    "createdAt": "2026-09-23T16:55:42.967Z",
+    "versionId": "3e1cd528-5cd5-4428-b118-7a64c9d80b02",
+    "workflowId": "wacaqtaVrNtfEgGr",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "4ca7088e-8080-43f9-8270-c9f408382f81",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'error', 'system', $2::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $json.execution.id, JSON.stringify({ workflow: $json.workflow.name, node: $json.execution.lastNodeExecuted, message: $json.execution.error?.message }) ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          224,
+          0
+        ],
+        "id": "8cb660db-cdf5-43b4-a599-4d5e68d0da43",
+        "name": "Audit: error",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Audit: error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Owner Owner4test",
+    "name": "V1",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T16:58:10.609Z",
+        "id": 1,
+        "workflowId": "wacaqtaVrNtfEgGr",
+        "versionId": "3e1cd528-5cd5-4428-b118-7a64c9d80b02",
+        "event": "activated",
+        "userId": "33d65afa-8f00-4847-aaa6-453d6d43d611"
+      }
+    ]
+  },
+  "scopes": [
+    "execution:reveal",
+    "workflow:create",
+    "workflow:delete",
+    "workflow:disableRedaction",
+    "workflow:enableRedaction",
+    "workflow:execute",
+    "workflow:execute-chat",
+    "workflow:export",
+    "workflow:import",
+    "workflow:list",
+    "workflow:move",
+    "workflow:publish",
+    "workflow:read",
+    "workflow:share",
+    "workflow:unpublish",
+    "workflow:unshare",
+    "workflow:update"
+  ],
+  "checksum": "ff7035efc83a81e9bd18206d110fff9e14364a166724aab9bbc47a74d999ff59"
+}

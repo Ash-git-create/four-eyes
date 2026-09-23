@@ -48,7 +48,10 @@ CREATE TABLE IF NOT EXISTS model_prices (
 INSERT INTO model_prices VALUES
     ('claude-opus-5',    5, 25, 6.25, 0.50, 'claude-api skill price table, cached 2026-06-24; verify on anthropic.com/pricing'),
     ('claude-sonnet-5',  2, 10, 2.50, 0.20, 'claude-api skill price table, cached 2026-06-24; verify on anthropic.com/pricing'),
-    ('claude-haiku-4-5', 1,  5, 1.25, 0.10, 'claude-api skill price table, cached 2026-06-24; verify on anthropic.com/pricing')
+    ('claude-haiku-4-5', 1,  5, 1.25, 0.10, 'claude-api skill price table, cached 2026-06-24; verify on anthropic.com/pricing'),
+    -- Development only: Groq free tier has no per-token charge, so cost_usd is 0 for
+    -- these runs. Token counts are still real; the daily cap cannot bind on them.
+    ('openai/gpt-oss-120b', 0, 0, 0, 0, 'Groq free tier (no per-token charge) - development substitute for Claude')
 ON CONFLICT (model) DO UPDATE SET
     input_per_mtok = EXCLUDED.input_per_mtok, output_per_mtok = EXCLUDED.output_per_mtok,
     cache_write_per_mtok = EXCLUDED.cache_write_per_mtok, cache_read_per_mtok = EXCLUDED.cache_read_per_mtok,

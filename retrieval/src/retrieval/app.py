@@ -1,6 +1,7 @@
 """HTTP layer for the retrieval service. POST /search {query, k?, mode?}, POST /redact {text}."""
 from flask import Flask, jsonify, request
 
+from .claims import ClaimsChecker
 from .redaction import redact
 from .search import MODES, Searcher
 
@@ -21,9 +22,23 @@ def build_searcher() -> Searcher:
     return Searcher(Embedder(), Reranker(), vector_search)
 
 
-def create_app(searcher: Searcher | None = None) -> Flask:
+def build_claims_checker() -> ClaimsChecker:
+    from . import config, store
+    from .models import Embedder
+
+    url = config.database_url()
+
+    def nearest(vec):
+        with store.connect(url) as conn:
+            return store.nearest_authorised_claim(conn, vec)
+
+    return ClaimsChecker(Embedder(), nearest)
+
+
+def create_app(searcher: Searcher | None = None, claims_checker: ClaimsChecker | None = None) -> Flask:
     app = Flask(__name__)
     searcher = searcher or build_searcher()  # load models at startup, not on first request
+    claims_checker = claims_checker or build_claims_checker()
 
     @app.get("/health")
     def health():
@@ -56,6 +71,14 @@ def create_app(searcher: Searcher | None = None) -> Flask:
         redacted, counts = redact(text)
         # Counts only: the response never echoes what was removed.
         return jsonify(text=redacted, redactions=counts)
+
+    @app.post("/claims-check")
+    def claims_check():
+        body = request.get_json(silent=True) or {}
+        draft = body.get("draft")
+        if not isinstance(draft, str) or not draft.strip():
+            return jsonify(error="'draft' must be a non-empty string"), 400
+        return jsonify(claims_checker.check(draft))
 
     return app
 
