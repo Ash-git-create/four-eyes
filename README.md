@@ -93,7 +93,7 @@ Models are cached in `.cache/` (about 940 MB); `rm -rf .cache` removes them.
 
 ## Honest notes
 
-- **The drafting model is not a frontier LLM.** It currently runs on `openai/gpt-oss-120b` via Groq's free tier, because no Anthropic API credit was available. The call is plain HTTP and an eg: Claude prices are already in the database. `cost_usd` is therefore 0.00: the tier is free, not the pipeline cheap.
+- **The drafting model is not a frontier LLM.** It currently runs on `openai/gpt-oss-120b` via Groq's free tier. The call is plain HTTP and an eg: Claude prices are already in the database. `cost_usd` is therefore 0.00: the tier is free, not the pipeline cheap.
 - **The claims-check threshold is provisional**, set from five example sentences. No precision figure is claimed.
 - **Known gaps are listed in GOVERNANCE.md §8**, including approval by bearer URL, self-declared requester identity, unredacted names and no retention limit on the audit log.
 
