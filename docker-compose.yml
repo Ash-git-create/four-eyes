@@ -8,6 +8,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       N8N_DB_PASSWORD: ${N8N_DB_PASSWORD}
       KB_DB_PASSWORD: ${KB_DB_PASSWORD}
+      N8N_APP_DB_PASSWORD: ${N8N_APP_DB_PASSWORD}
     ports:
       - "127.0.0.1:5432:5432"   # localhost only, so the retrieval service on the host can reach it
     volumes:

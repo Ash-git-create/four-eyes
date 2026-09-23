@@ -1,0 +1,2526 @@
+{
+ "run_at": "2026-09-22T14:39:45.122109+00:00",
+ "questions_file": "eval/questions.jsonl",
+ "n_questions": 60,
+ "embed_model": "intfloat/multilingual-e5-small",
+ "rerank_model": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+ "rerank_candidates": 20,
+ "runs": [
+  {
+   "mode": "vector",
+   "overall": {
+    "n": 45,
+    "hit@1": 0.733,
+    "hit@5": 0.867,
+    "mrr@10": 0.793
+   },
+   "by_type": {
+    "policy": {
+     "n": 18,
+     "hit@1": 0.778,
+     "hit@5": 0.833,
+     "mrr@10": 0.796
+    },
+    "product": {
+     "n": 22,
+     "hit@1": 0.636,
+     "hit@5": 0.864,
+     "mrr@10": 0.744
+    },
+    "combined": {
+     "n": 5,
+     "hit@1": 1.0,
+     "hit@5": 1.0,
+     "mrr@10": 1.0
+    }
+   },
+   "by_lang": {
+    "en": {
+     "n": 30,
+     "hit@1": 0.833,
+     "hit@5": 0.9,
+     "mrr@10": 0.871
+    },
+    "de": {
+     "n": 15,
+     "hit@1": 0.533,
+     "hit@5": 0.8,
+     "mrr@10": 0.639
+    }
+   },
+   "combined_all_gold_in_top5": 2,
+   "top1_score_answerable": {
+    "min": 0.764,
+    "median": 0.871,
+    "max": 0.943
+   },
+   "top1_score_unanswerable": {
+    "min": 0.781,
+    "median": 0.811,
+    "max": 0.854
+   },
+   "latency_ms_p50": 16.6,
+   "latency_note": "in-process Searcher.search (embed + DB query + rerank), warm models, local Mac",
+   "per_question": [
+    {
+     "id": "q001",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8634597225833331,
+     "retrieved": [
+      "sample-returns#return-window",
+      "sample-shipping#lost-parcels",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#refunds",
+      "sample-shipping#delivery-times",
+      "sample-returns#how-to-return",
+      "sample-shipping#heat-sensitive-products",
+      "sample-returns#opened-products",
+      "sample-shipping#delivery-countries",
+      "off:5060469985206"
+     ]
+    },
+    {
+     "id": "q002",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8577661003013805,
+     "retrieved": [
+      "sample-returns#opened-products",
+      "sample-returns#how-to-return",
+      "sample-returns#refunds",
+      "sample-returns#return-window",
+      "sample-returns#faulty-or-damaged-products",
+      "off:5060811384466",
+      "off:5060245600507",
+      "off:7613312320747",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "off:5055534302903"
+     ]
+    },
+    {
+     "id": "q003",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8817572209077098,
+     "retrieved": [
+      "sample-returns#how-to-return",
+      "sample-returns#refunds",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#opened-products",
+      "sample-returns#return-window",
+      "sample-shipping#lost-parcels",
+      "sample-shipping#shipping-costs",
+      "off:0676424709746",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "off:4250031354726"
+     ]
+    },
+    {
+     "id": "q004",
+     "type": "policy",
+     "lang": "de",
+     "rank": 3,
+     "all_gold_in_top5": true,
+     "top1_score": 0.7635890245437622,
+     "retrieved": [
+      "off:5060925290875",
+      "off:4029679675414",
+      "sample-returns#how-to-return",
+      "off:4305615985800",
+      "off:4305615986364",
+      "off:4066447319613",
+      "off:4316268602587",
+      "off:4260556631936",
+      "off:4036554703582",
+      "off:4061459524123"
+     ]
+    },
+    {
+     "id": "q005",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8404842114159949,
+     "retrieved": [
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#heat-sensitive-products",
+      "off:4250031354726",
+      "sample-returns#opened-products",
+      "off:4250519600079",
+      "sample-shipping#lost-parcels",
+      "off:5060495117275",
+      "off:4260390243852",
+      "off:5056307356390",
+      "off:4260390241636"
+     ]
+    },
+    {
+     "id": "q006",
+     "type": "policy",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8142136556847506,
+     "retrieved": [
+      "off:4066447319590",
+      "off:4061461683818",
+      "off:4061459471816",
+      "off:4066447257625",
+      "off:4061462220104",
+      "off:4260556631943",
+      "off:2200220255480",
+      "off:2200277856906",
+      "off:4036554703636",
+      "off:4008391213890"
+     ]
+    },
+    {
+     "id": "q007",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8647645711898804,
+     "retrieved": [
+      "sample-returns#refunds",
+      "sample-returns#return-window",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#lost-parcels",
+      "sample-returns#how-to-return",
+      "sample-returns#opened-products",
+      "sample-shipping#delivery-times",
+      "off:5060469985206",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "off:7613312320747"
+     ]
+    },
+    {
+     "id": "q008",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8670528531074524,
+     "retrieved": [
+      "sample-returns#refunds",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#return-window",
+      "sample-returns#how-to-return",
+      "sample-returns#opened-products",
+      "sample-shipping#lost-parcels",
+      "sample-shipping#delivery-countries",
+      "sample-shipping#delivery-times",
+      "off:5060925291285",
+      "sample-allergens#where-allergen-information-comes-from"
+     ]
+    },
+    {
+     "id": "q009",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8054841988701583,
+     "retrieved": [
+      "sample-shipping#delivery-countries",
+      "sample-shipping#delivery-times",
+      "sample-shipping#shipping-costs",
+      "off:4250031354726",
+      "sample-shipping#lost-parcels",
+      "off:7610900311576",
+      "off:4335619113398",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-returns#faulty-or-damaged-products",
+      "off:4068134024299"
+     ]
+    },
+    {
+     "id": "q010",
+     "type": "policy",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8087080235059262,
+     "retrieved": [
+      "sample-shipping#delivery-times",
+      "sample-shipping#shipping-costs",
+      "off:4066447319590",
+      "off:4068134024312",
+      "off:7340001805932",
+      "off:4056489822479",
+      "off:5391532124155",
+      "off:4061459471816",
+      "off:4335619113398",
+      "off:4061459617658"
+     ]
+    },
+    {
+     "id": "q011",
+     "type": "policy",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8095828181256558,
+     "retrieved": [
+      "sample-shipping#shipping-costs",
+      "off:4335619113398",
+      "sample-returns#how-to-return",
+      "off:4066447319590",
+      "off:4056489704799",
+      "off:5060925290875",
+      "off:4260648132440",
+      "off:4008391213753",
+      "off:4260648131900",
+      "off:4260556631936"
+     ]
+    },
+    {
+     "id": "q012",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8800932622067065,
+     "retrieved": [
+      "sample-shipping#heat-sensitive-products",
+      "off:7340001807141",
+      "off:4088600560298",
+      "off:4260562940268",
+      "off:0722252387479",
+      "off:4029679996984",
+      "off:4056489884927",
+      "off:8719881998598",
+      "off:4056489887034",
+      "off:7640151710071"
+     ]
+    },
+    {
+     "id": "q013",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8707212132645392,
+     "retrieved": [
+      "sample-shipping#lost-parcels",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#delivery-times",
+      "sample-returns#return-window",
+      "sample-returns#refunds",
+      "sample-allergens#declared-allergens-and-traces",
+      "sample-shipping#heat-sensitive-products",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-returns#opened-products",
+      "sample-shipping#delivery-countries"
+     ]
+    },
+    {
+     "id": "q014",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.9180838563342331,
+     "retrieved": [
+      "sample-allergens#declared-allergens-and-traces",
+      "sample-allergens#milk-and-lactose",
+      "sample-allergens#where-allergen-information-comes-from",
+      "sample-allergens#gluten",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "off:4250031354269",
+      "off:7340001807141",
+      "off:4260644580139",
+      "off:5060119293309",
+      "off:5060088707661"
+     ]
+    },
+    {
+     "id": "q015",
+     "type": "policy",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8558877878322915,
+     "retrieved": [
+      "off:4260556631943",
+      "off:2200220255480",
+      "off:0722252387646",
+      "off:4036554703636",
+      "off:4305615985800",
+      "off:4061462220104",
+      "off:4305615986364",
+      "off:4061459471816",
+      "off:4066447319590",
+      "off:4066447257625"
+     ]
+    },
+    {
+     "id": "q016",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8970096645957047,
+     "retrieved": [
+      "sample-allergens#milk-and-lactose",
+      "off:7613404451922",
+      "off:7340001804898",
+      "off:5711953068881",
+      "off:4260390244477",
+      "off:4067796146875",
+      "off:4006643010952",
+      "off:4029679680388",
+      "off:5711953081330",
+      "sample-allergens#gluten"
+     ]
+    },
+    {
+     "id": "q017",
+     "type": "policy",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8485542282893027,
+     "retrieved": [
+      "off:2200220255480",
+      "off:4305615822624",
+      "off:4036554703636",
+      "off:2200277856906",
+      "off:4061462220104",
+      "off:4305615985800",
+      "off:4305615986364",
+      "off:4066447530629",
+      "off:4008391213807",
+      "off:4008391213890"
+     ]
+    },
+    {
+     "id": "q018",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8561126420397279,
+     "retrieved": [
+      "sample-allergens#where-allergen-information-comes-from",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-allergens#gluten",
+      "sample-allergens#declared-allergens-and-traces",
+      "sample-allergens#milk-and-lactose",
+      "off:5060119293309",
+      "off:4260644580139",
+      "off:4029679676749",
+      "off:0676424709746",
+      "off:4250031354269"
+     ]
+    },
+    {
+     "id": "q019",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.897345244884491,
+     "retrieved": [
+      "off:5712840020142",
+      "off:4029679680142",
+      "off:8410076900319",
+      "off:5712840020128",
+      "off:5712840020036",
+      "off:4260044266923",
+      "off:0193908007926",
+      "off:4260562940268",
+      "off:4088600560298",
+      "off:0722252601414"
+     ]
+    },
+    {
+     "id": "q020",
+     "type": "product",
+     "lang": "de",
+     "rank": 4,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8553646802902222,
+     "retrieved": [
+      "off:4061461683818",
+      "off:2200277856906",
+      "off:4061463697141",
+      "off:5056357901441",
+      "off:4305615822624",
+      "off:4008391213890",
+      "off:4061459617658",
+      "off:4066447319590",
+      "off:4066447083972",
+      "off:4066447319613"
+     ]
+    },
+    {
+     "id": "q021",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.9431120225057642,
+     "retrieved": [
+      "off:7340001804553",
+      "off:4029679900004",
+      "off:4260644585509",
+      "off:4260701928546",
+      "off:4260701927563",
+      "off:4260644585813",
+      "off:4250031354269",
+      "off:4011800295516",
+      "off:4260640858072",
+      "off:4029679676749"
+     ]
+    },
+    {
+     "id": "q022",
+     "type": "product",
+     "lang": "en",
+     "rank": 2,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8835244511507651,
+     "retrieved": [
+      "off:4029679526013",
+      "off:4029679680708",
+      "off:4029679676749",
+      "off:4029679900042",
+      "off:4056489884927",
+      "off:4260044260860",
+      "off:4029679900004",
+      "off:4260363487214",
+      "off:8719979200664",
+      "off:7340001807141"
+     ]
+    },
+    {
+     "id": "q023",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.9023501451581473,
+     "retrieved": [
+      "off:4009700071613",
+      "off:4056489822462",
+      "off:4260648131900",
+      "off:4066447603293",
+      "off:4068134024435",
+      "off:4006643135679",
+      "off:4068134024152",
+      "off:4260426832104",
+      "off:4260697371524",
+      "off:4056489822455"
+     ]
+    },
+    {
+     "id": "q024",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.9100488531531336,
+     "retrieved": [
+      "off:4260593957525",
+      "off:4029679900004",
+      "off:4066447423068",
+      "off:4260593955651",
+      "off:4250519668635",
+      "off:4260744953840",
+      "off:4260644585813",
+      "off:4260744953819",
+      "off:4260446586148",
+      "off:4061289001566"
+     ]
+    },
+    {
+     "id": "q025",
+     "type": "product",
+     "lang": "en",
+     "rank": 7,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8401949596172679,
+     "retrieved": [
+      "off:4029679900004",
+      "off:4260593957525",
+      "off:4061289001566",
+      "off:4250519668635",
+      "off:4260644585813",
+      "off:4260446586148",
+      "off:4000194901257",
+      "off:4260648136011",
+      "off:4066447423068",
+      "off:4068134024282"
+     ]
+    },
+    {
+     "id": "q026",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8829000259310019,
+     "retrieved": [
+      "off:5060119293309",
+      "off:4061289003553",
+      "off:4260644048783",
+      "off:0722252387646",
+      "off:7340001807141",
+      "off:4088600560298",
+      "off:96103890",
+      "off:8410076900302",
+      "off:4066447257588",
+      "off:0722252601414"
+     ]
+    },
+    {
+     "id": "q027",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8669704874175512,
+     "retrieved": [
+      "off:4262426520302",
+      "off:4280001939318",
+      "off:4066447603293",
+      "off:4280001939622",
+      "off:4066447603316",
+      "off:4068134024428",
+      "off:4068134024435",
+      "off:4056489822455",
+      "off:4066447731491",
+      "off:4058172969386"
+     ]
+    },
+    {
+     "id": "q028",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.871653717310404,
+     "retrieved": [
+      "off:4260044260860",
+      "off:4260044264455",
+      "off:4311596637393",
+      "off:4260044260402",
+      "off:4311596014736",
+      "off:4260044269337",
+      "off:4008391213357",
+      "off:4066447319590",
+      "off:4061461683818",
+      "off:4036554703629"
+     ]
+    },
+    {
+     "id": "q029",
+     "type": "product",
+     "lang": "en",
+     "rank": 7,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8989370585755104,
+     "retrieved": [
+      "off:5055534302903",
+      "off:4066447423068",
+      "off:4260644585813",
+      "off:4029679900004",
+      "off:4260701927105",
+      "off:4068134024282",
+      "off:5056307356390",
+      "off:4250519668635",
+      "off:4068134024398",
+      "off:5055534314890"
+     ]
+    },
+    {
+     "id": "q030",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8478915510048392,
+     "retrieved": [
+      "off:4250519652863",
+      "off:4061459895698",
+      "off:4250519668222",
+      "off:4250519677033",
+      "off:4250519646534",
+      "off:4250519600185",
+      "off:4250519667867",
+      "off:4250519648736",
+      "off:4250519668635",
+      "off:4260648135366"
+     ]
+    },
+    {
+     "id": "q031",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8939170837402344,
+     "retrieved": [
+      "off:4260640858072",
+      "off:4260744953840",
+      "off:4250031354269",
+      "off:4029679999572",
+      "off:4029679996885",
+      "off:4056489884859",
+      "off:4260744953819",
+      "off:4260644580139",
+      "off:4056489884903",
+      "off:3800233780611"
+     ]
+    },
+    {
+     "id": "q032",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.87240751437016,
+     "retrieved": [
+      "off:5056281162017",
+      "off:5059883177526",
+      "off:4061462219375",
+      "off:4260390243852",
+      "off:4067796105711",
+      "off:4068134024152",
+      "off:4260718291398",
+      "off:4006643010952",
+      "off:4029679550018",
+      "off:4068134024282"
+     ]
+    },
+    {
+     "id": "q033",
+     "type": "product",
+     "lang": "de",
+     "rank": 2,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8894409206342976,
+     "retrieved": [
+      "off:4056489789871",
+      "off:4056489887058",
+      "off:4056489887034",
+      "off:4056489822431",
+      "off:4056489038610",
+      "off:4056489884873",
+      "off:4056489130758",
+      "off:4056489822479",
+      "off:4029679680708",
+      "off:4056489038597"
+     ]
+    },
+    {
+     "id": "q034",
+     "type": "product",
+     "lang": "en",
+     "rank": 3,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8888134890087555,
+     "retrieved": [
+      "off:4056489884866",
+      "off:4056489388685",
+      "off:4056489884873",
+      "off:4056489207078",
+      "off:4260648131665",
+      "off:4260648132495",
+      "off:20035594",
+      "off:4056489130741",
+      "off:4056489704799",
+      "off:4260648134819"
+     ]
+    },
+    {
+     "id": "q035",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8948715391831689,
+     "retrieved": [
+      "off:4056489704782",
+      "off:4260697372491",
+      "off:4066447704686",
+      "off:4260648134291",
+      "off:4008391213845",
+      "off:4056489038597",
+      "off:4068134024428",
+      "off:2200277856906",
+      "off:4061463697141",
+      "off:4061462220104"
+     ]
+    },
+    {
+     "id": "q036",
+     "type": "product",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8583826507101878,
+     "retrieved": [
+      "off:4029679680142",
+      "off:4088600560298",
+      "off:4305615883823",
+      "off:7340001807141",
+      "off:4066447234749",
+      "off:8410076900319",
+      "off:7340001804751",
+      "off:4260644585233",
+      "off:4061289007469",
+      "off:4029679996984"
+     ]
+    },
+    {
+     "id": "q037",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8946738431440888,
+     "retrieved": [
+      "off:4029679680388",
+      "off:4255582812510",
+      "off:4260644585509",
+      "off:4056489822462",
+      "off:4260644585554",
+      "off:4250031354726",
+      "off:0686207801666",
+      "off:4260644585813",
+      "off:5056357904428",
+      "off:4260446586148"
+     ]
+    },
+    {
+     "id": "q038",
+     "type": "product",
+     "lang": "de",
+     "rank": 2,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8704157548895044,
+     "retrieved": [
+      "off:4061459622409",
+      "off:4250031353712",
+      "off:4066447319590",
+      "off:4058172969386",
+      "off:4067796105711",
+      "off:4311596014736",
+      "off:4061463697288",
+      "off:4058172969362",
+      "off:4061459471823",
+      "off:4056489822455"
+     ]
+    },
+    {
+     "id": "q039",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8781935049180103,
+     "retrieved": [
+      "off:7340001804898",
+      "off:0888849011582",
+      "off:5711953081330",
+      "off:5711953068881",
+      "off:7340001804553",
+      "off:4056489887034",
+      "off:4311501072882",
+      "off:7340001806649",
+      "off:7610900311576",
+      "off:4311596014682"
+     ]
+    },
+    {
+     "id": "q040",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8959720401755588,
+     "retrieved": [
+      "off:4068134024299",
+      "off:4068134024398",
+      "off:4068134024329",
+      "off:4068134024282",
+      "off:4305615883823",
+      "off:4311596014682",
+      "off:4068134024152",
+      "off:4068134024190",
+      "off:4068134024206",
+      "off:4250031354726"
+     ]
+    },
+    {
+     "id": "q041",
+     "type": "combined",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8648508271663904,
+     "retrieved": [
+      "off:4061459780260",
+      "off:4029679995727",
+      "off:5060245600507",
+      "off:4061459471823",
+      "sample-allergens#milk-and-lactose",
+      "off:4260363480871",
+      "off:4061459780307",
+      "off:4061459622348",
+      "off:7640151710071",
+      "off:4061459622409"
+     ]
+    },
+    {
+     "id": "q042",
+     "type": "combined",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8683820288409028,
+     "retrieved": [
+      "sample-allergens#milk-and-lactose",
+      "off:4335619113398",
+      "off:7613404451922",
+      "off:7610900311576",
+      "off:4056489618140",
+      "off:42454137",
+      "off:4056489862024",
+      "off:5391532124254",
+      "off:5711953081330",
+      "off:4002971336504"
+     ]
+    },
+    {
+     "id": "q043",
+     "type": "combined",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8310485087575366,
+     "retrieved": [
+      "off:4068134024299",
+      "off:2200220255480",
+      "off:4068134024312",
+      "off:4068134024282",
+      "off:4066447731491",
+      "off:4068134024428",
+      "off:4068134024350",
+      "off:4068134024442",
+      "off:4066447600988",
+      "off:4066447257625"
+     ]
+    },
+    {
+     "id": "q044",
+     "type": "combined",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8845653144302418,
+     "retrieved": [
+      "off:4260556631943",
+      "off:4066447083972",
+      "off:4066447319590",
+      "off:4066447257625",
+      "off:4036554703636",
+      "off:4061462220104",
+      "off:4311596660988",
+      "off:4066447704686",
+      "off:2200220255480",
+      "off:4066447600988"
+     ]
+    },
+    {
+     "id": "q045",
+     "type": "combined",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.8851751822024366,
+     "retrieved": [
+      "sample-allergens#gluten",
+      "off:0722252387479",
+      "off:8595657104383",
+      "off:4260562940268",
+      "off:5060925291285",
+      "off:4056489789864",
+      "off:0686207801666",
+      "off:4260363487214",
+      "off:0722252387646",
+      "off:4250031353712"
+     ]
+    },
+    {
+     "id": "q046",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8077419400215149,
+     "retrieved": [
+      "sample-returns#refunds",
+      "sample-returns#how-to-return",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#shipping-costs",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-shipping#lost-parcels",
+      "sample-shipping#delivery-countries",
+      "sample-returns#return-window",
+      "sample-returns#opened-products",
+      "off:4029679680142"
+     ]
+    },
+    {
+     "id": "q047",
+     "type": "unanswerable",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.7808561325073242,
+     "retrieved": [
+      "off:4068134039873",
+      "off:4255582800487",
+      "off:4255719312302",
+      "off:4066447603316",
+      "off:4056489704799",
+      "off:4061459471816",
+      "off:4056489388678",
+      "off:4056489789888",
+      "off:4250031354252",
+      "off:4061459617658"
+     ]
+    },
+    {
+     "id": "q048",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8076946620759181,
+     "retrieved": [
+      "sample-shipping#lost-parcels",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#return-window",
+      "sample-returns#refunds",
+      "sample-allergens#where-allergen-information-comes-from",
+      "sample-shipping#delivery-times",
+      "sample-returns#how-to-return",
+      "off:0888849011582",
+      "off:5060495117275"
+     ]
+    },
+    {
+     "id": "q049",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8543270571730452,
+     "retrieved": [
+      "off:4056489388685",
+      "off:4029679996984",
+      "off:4260363487214",
+      "off:5999076236718",
+      "off:0193908007926",
+      "off:20035563",
+      "off:4056489038597",
+      "off:4088600560298",
+      "off:20035594",
+      "off:4250031353712"
+     ]
+    },
+    {
+     "id": "q050",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8448478856954794,
+     "retrieved": [
+      "off:4262426520302",
+      "off:4260701926733",
+      "off:4280001939318",
+      "off:5711953081330",
+      "off:4066447530629",
+      "off:4066447603293",
+      "off:4068134024190",
+      "off:4068134024329",
+      "off:4002971336504",
+      "off:4002971320305"
+     ]
+    },
+    {
+     "id": "q051",
+     "type": "unanswerable",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8062735430868216,
+     "retrieved": [
+      "off:4066447257625",
+      "off:4036554703636",
+      "off:4066447319590",
+      "off:4008391213890",
+      "off:2200220255480",
+      "off:4008391213357",
+      "off:4066447319576",
+      "off:4316268602587",
+      "off:4008391023956",
+      "off:4008391213753"
+     ]
+    },
+    {
+     "id": "q052",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8332551221099438,
+     "retrieved": [
+      "sample-returns#refunds",
+      "sample-returns#return-window",
+      "sample-shipping#shipping-costs",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#lost-parcels",
+      "sample-shipping#delivery-times",
+      "sample-returns#how-to-return",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-returns#opened-products",
+      "sample-allergens#where-allergen-information-comes-from"
+     ]
+    },
+    {
+     "id": "q053",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8136190883148274,
+     "retrieved": [
+      "sample-shipping#delivery-countries",
+      "sample-shipping#delivery-times",
+      "sample-shipping#shipping-costs",
+      "sample-shipping#lost-parcels",
+      "off:4260426832104",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#refunds",
+      "sample-returns#return-window",
+      "off:4068134024299",
+      "off:4056489749455"
+     ]
+    },
+    {
+     "id": "q054",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8354313569746843,
+     "retrieved": [
+      "sample-allergens#where-allergen-information-comes-from",
+      "sample-shipping#lost-parcels",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-allergens#declared-allergens-and-traces",
+      "sample-shipping#delivery-times",
+      "sample-returns#return-window",
+      "sample-shipping#delivery-countries",
+      "sample-returns#refunds",
+      "sample-returns#how-to-return"
+     ]
+    },
+    {
+     "id": "q055",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.7927135476215424,
+     "retrieved": [
+      "sample-returns#how-to-return",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-returns#opened-products",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-allergens#declared-allergens-and-traces",
+      "sample-allergens#where-allergen-information-comes-from",
+      "sample-returns#refunds",
+      "sample-shipping#heat-sensitive-products",
+      "sample-shipping#shipping-costs",
+      "off:5060088707661"
+     ]
+    },
+    {
+     "id": "q056",
+     "type": "aggregate",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8960117964748088,
+     "retrieved": [
+      "off:4056489884859",
+      "off:4056489884903",
+      "off:4260640858072",
+      "off:4029679999572",
+      "off:4250031354726",
+      "off:4056489887065",
+      "off:4260701927563",
+      "off:4068134024398",
+      "off:3800233780611",
+      "off:4011800000981"
+     ]
+    },
+    {
+     "id": "q057",
+     "type": "aggregate",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8307839384441428,
+     "retrieved": [
+      "off:4066447257625",
+      "off:4066447600988",
+      "off:4008391213357",
+      "off:4008391023956",
+      "off:4066447319590",
+      "off:4061462220104",
+      "off:4036554703636",
+      "off:5060221208048",
+      "off:4008391213890",
+      "off:4061463697141"
+     ]
+    },
+    {
+     "id": "q058",
+     "type": "aggregate",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8623618565582137,
+     "retrieved": [
+      "off:4029679999572",
+      "off:42454113",
+      "off:9066001445500",
+      "off:4260648131665",
+      "off:4066447603330",
+      "off:4260701927105",
+      "off:4029679996885",
+      "off:3800233780611",
+      "off:4006643135471",
+      "off:4029679900004"
+     ]
+    },
+    {
+     "id": "q059",
+     "type": "aggregate",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8398447036743164,
+     "retrieved": [
+      "off:4260562940268",
+      "off:4260648135632",
+      "off:4029679996885",
+      "off:4056489884866",
+      "off:4260648132495",
+      "off:0722252387479",
+      "off:4260644580139",
+      "off:5060811384466",
+      "off:5056357999707",
+      "off:4250031354726"
+     ]
+    },
+    {
+     "id": "q060",
+     "type": "aggregate",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 0.8270360334494109,
+     "retrieved": [
+      "off:4056489887027",
+      "off:0888849011582",
+      "off:5059883177526",
+      "off:4088600560298",
+      "off:8719979200664",
+      "off:4260744953376",
+      "off:4260648136011",
+      "off:8410076900302",
+      "off:4260044268026",
+      "off:5060811384466"
+     ]
+    }
+   ]
+  },
+  {
+   "mode": "vector+rerank",
+   "overall": {
+    "n": 45,
+    "hit@1": 0.733,
+    "hit@5": 0.844,
+    "mrr@10": 0.796
+   },
+   "by_type": {
+    "policy": {
+     "n": 18,
+     "hit@1": 0.556,
+     "hit@5": 0.667,
+     "mrr@10": 0.628
+    },
+    "product": {
+     "n": 22,
+     "hit@1": 0.955,
+     "hit@5": 0.955,
+     "mrr@10": 0.955
+    },
+    "combined": {
+     "n": 5,
+     "hit@1": 0.4,
+     "hit@5": 1.0,
+     "mrr@10": 0.7
+    }
+   },
+   "by_lang": {
+    "en": {
+     "n": 30,
+     "hit@1": 0.767,
+     "hit@5": 0.867,
+     "mrr@10": 0.827
+    },
+    "de": {
+     "n": 15,
+     "hit@1": 0.667,
+     "hit@5": 0.8,
+     "mrr@10": 0.733
+    }
+   },
+   "combined_all_gold_in_top5": 2,
+   "top1_score_answerable": {
+    "min": -5.503,
+    "median": 1.765,
+    "max": 10.774
+   },
+   "top1_score_unanswerable": {
+    "min": -6.694,
+    "median": -5.113,
+    "max": 2.809
+   },
+   "latency_ms_p50": 219.7,
+   "latency_note": "in-process Searcher.search (embed + DB query + rerank), warm models, local Mac",
+   "per_question": [
+    {
+     "id": "q001",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": -4.456121921539307,
+     "retrieved": [
+      "sample-returns#return-window",
+      "sample-returns#refunds",
+      "sample-shipping#lost-parcels",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#delivery-times",
+      "off:5059883177526",
+      "off:5056357999707",
+      "off:5060495117275",
+      "off:5060469985206",
+      "sample-returns#opened-products"
+     ]
+    },
+    {
+     "id": "q002",
+     "type": "policy",
+     "lang": "en",
+     "rank": 7,
+     "all_gold_in_top5": false,
+     "top1_score": -4.654344081878662,
+     "retrieved": [
+      "off:5056307356390",
+      "off:4260289446531",
+      "sample-returns#refunds",
+      "sample-returns#return-window",
+      "off:7613312320747",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#opened-products",
+      "off:5060245600507",
+      "off:5060469985206",
+      "sample-allergens#we-do-not-give-medical-advice"
+     ]
+    },
+    {
+     "id": "q003",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": -1.502685785293579,
+     "retrieved": [
+      "sample-returns#how-to-return",
+      "sample-shipping#shipping-costs",
+      "sample-returns#opened-products",
+      "sample-returns#refunds",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#return-window",
+      "off:8719979204068",
+      "off:4260363482332",
+      "off:0722252387479",
+      "off:0888849011582"
+     ]
+    },
+    {
+     "id": "q004",
+     "type": "policy",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": -2.3724312782287598,
+     "retrieved": [
+      "sample-returns#how-to-return",
+      "off:4066447319613",
+      "off:4061459471816",
+      "off:4061459524123",
+      "off:4311596660988",
+      "off:4260556631936",
+      "off:5060925290875",
+      "off:4029679550018",
+      "off:4066447257625",
+      "off:4260648134291"
+     ]
+    },
+    {
+     "id": "q005",
+     "type": "policy",
+     "lang": "en",
+     "rank": 6,
+     "all_gold_in_top5": false,
+     "top1_score": -5.0288615226745605,
+     "retrieved": [
+      "off:5056307356390",
+      "sample-returns#opened-products",
+      "off:4260446586148",
+      "off:4260718291398",
+      "off:4029679680388",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#heat-sensitive-products",
+      "off:4250519600079",
+      "off:4250031354726",
+      "off:4260390241636"
+     ]
+    },
+    {
+     "id": "q006",
+     "type": "policy",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": -4.75174617767334,
+     "retrieved": [
+      "off:4067796183719",
+      "off:4066447319613",
+      "off:4061462220104",
+      "off:4260654789119",
+      "off:4061459471816",
+      "off:4260556631943",
+      "off:4066447704686",
+      "off:4066447319590",
+      "off:2200220255480",
+      "off:4061463697141"
+     ]
+    },
+    {
+     "id": "q007",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": -3.4629480838775635,
+     "retrieved": [
+      "sample-returns#refunds",
+      "sample-returns#return-window",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#delivery-times",
+      "sample-shipping#lost-parcels",
+      "sample-returns#opened-products",
+      "off:5060469985206",
+      "sample-returns#how-to-return",
+      "sample-shipping#heat-sensitive-products",
+      "off:4088600560298"
+     ]
+    },
+    {
+     "id": "q008",
+     "type": "policy",
+     "lang": "en",
+     "rank": 2,
+     "all_gold_in_top5": true,
+     "top1_score": -3.349705934524536,
+     "retrieved": [
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#refunds",
+      "sample-returns#return-window",
+      "sample-shipping#lost-parcels",
+      "sample-returns#opened-products",
+      "sample-returns#how-to-return",
+      "sample-shipping#delivery-times",
+      "sample-shipping#delivery-countries",
+      "sample-shipping#shipping-costs",
+      "off:5060469985206"
+     ]
+    },
+    {
+     "id": "q009",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": -5.502610683441162,
+     "retrieved": [
+      "sample-shipping#delivery-countries",
+      "sample-returns#refunds",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#delivery-times",
+      "sample-shipping#lost-parcels",
+      "sample-shipping#shipping-costs",
+      "off:4260648136370",
+      "off:4335619113398",
+      "off:5060925290875",
+      "off:4029679550018"
+     ]
+    },
+    {
+     "id": "q010",
+     "type": "policy",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 1.2101916074752808,
+     "retrieved": [
+      "sample-shipping#delivery-times",
+      "sample-shipping#shipping-costs",
+      "off:4067796183719",
+      "off:7340001805932",
+      "off:4068134024312",
+      "off:4066447603316",
+      "off:4335619113398",
+      "off:4066447319590",
+      "off:5060925290875",
+      "off:5391532124155"
+     ]
+    },
+    {
+     "id": "q011",
+     "type": "policy",
+     "lang": "de",
+     "rank": 2,
+     "all_gold_in_top5": true,
+     "top1_score": -4.475943088531494,
+     "retrieved": [
+      "off:4067796183719",
+      "sample-shipping#shipping-costs",
+      "sample-returns#refunds",
+      "off:4260556631936",
+      "off:5060925290875",
+      "off:4335619113398",
+      "off:4061459471816",
+      "off:4061459780260",
+      "off:4056489130758",
+      "off:4260648132440"
+     ]
+    },
+    {
+     "id": "q012",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 0.4219294786453247,
+     "retrieved": [
+      "sample-shipping#heat-sensitive-products",
+      "off:4056489887034",
+      "off:4088600560298",
+      "off:4056489130741",
+      "off:5060925291285",
+      "off:8719979200664",
+      "off:8719881998598",
+      "off:4260744953376",
+      "off:4260562940268",
+      "off:5056357999707"
+     ]
+    },
+    {
+     "id": "q013",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": -2.8130147457122803,
+     "retrieved": [
+      "sample-shipping#lost-parcels",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#refunds",
+      "off:5060469985206",
+      "sample-allergens#declared-allergens-and-traces",
+      "sample-returns#return-window",
+      "off:5060088700983",
+      "sample-shipping#delivery-times",
+      "off:5059883177526",
+      "off:5391532124254"
+     ]
+    },
+    {
+     "id": "q014",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 4.030385971069336,
+     "retrieved": [
+      "sample-allergens#declared-allergens-and-traces",
+      "off:5999076236718",
+      "off:7340001807141",
+      "off:5060119293309",
+      "off:5060088707661",
+      "sample-allergens#gluten",
+      "sample-allergens#where-allergen-information-comes-from",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "off:4068134024398",
+      "sample-returns#opened-products"
+     ]
+    },
+    {
+     "id": "q015",
+     "type": "policy",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": -2.047001600265503,
+     "retrieved": [
+      "off:4067796183719",
+      "off:4061459471816",
+      "off:4260556631943",
+      "off:4061462220104",
+      "off:4061459622348",
+      "off:9100000904146",
+      "off:4036554703605",
+      "off:2200220255480",
+      "off:2200277856906",
+      "off:4036554703636"
+     ]
+    },
+    {
+     "id": "q016",
+     "type": "policy",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": -0.12229213118553162,
+     "retrieved": [
+      "sample-allergens#milk-and-lactose",
+      "off:5711953068881",
+      "off:7613404451922",
+      "off:7340001804898",
+      "off:4006643010952",
+      "off:7610900311576",
+      "off:4260390244477",
+      "off:5391532124254",
+      "off:4067796146875",
+      "off:4066447603293"
+     ]
+    },
+    {
+     "id": "q017",
+     "type": "policy",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": -3.4325153827667236,
+     "retrieved": [
+      "off:4067796183719",
+      "off:4061462220104",
+      "off:4061459471816",
+      "off:4008391213869",
+      "off:4008391213807",
+      "off:4036554703605",
+      "off:2200277856906",
+      "off:4036554703636",
+      "off:4008391213890",
+      "off:2200220255480"
+     ]
+    },
+    {
+     "id": "q018",
+     "type": "policy",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": -3.8128788471221924,
+     "retrieved": [
+      "off:7340001807141",
+      "sample-allergens#gluten",
+      "off:4088600560298",
+      "off:5060119293309",
+      "off:4260644580139",
+      "off:4260744953840",
+      "off:4056489884903",
+      "off:4250031354269",
+      "off:4029679999572",
+      "off:3800233780611"
+     ]
+    },
+    {
+     "id": "q019",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 8.800786018371582,
+     "retrieved": [
+      "off:5712840020142",
+      "off:4260744952874",
+      "off:4260644585233",
+      "off:4260044266923",
+      "off:7340001804751",
+      "off:5712840020128",
+      "off:4088600560298",
+      "off:7340001807141",
+      "off:4029679680142",
+      "off:5712840020036"
+     ]
+    },
+    {
+     "id": "q020",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 5.302296161651611,
+     "retrieved": [
+      "off:5056357901441",
+      "off:2200277856906",
+      "off:4008391213890",
+      "off:4305615822624",
+      "off:4066447319613",
+      "off:4061462220104",
+      "off:4068134024428",
+      "off:4311596637409",
+      "off:4066447083972",
+      "off:4061459471816"
+     ]
+    },
+    {
+     "id": "q021",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 8.685887336730957,
+     "retrieved": [
+      "off:7340001804553",
+      "off:7340001803600",
+      "off:4260701928546",
+      "off:4250031354269",
+      "off:4260701924920",
+      "off:4056489887058",
+      "off:4056489884866",
+      "off:4029679900004",
+      "off:4260644585813",
+      "off:4260644585509"
+     ]
+    },
+    {
+     "id": "q022",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 9.613917350769043,
+     "retrieved": [
+      "off:4029679680708",
+      "off:4260044262499",
+      "off:4029679900042",
+      "off:4260044260860",
+      "off:4029679526013",
+      "off:4260562940268",
+      "off:4056489822431",
+      "off:4029679996953",
+      "off:4029679996984",
+      "off:4056489887027"
+     ]
+    },
+    {
+     "id": "q023",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 8.587431907653809,
+     "retrieved": [
+      "off:4009700071613",
+      "off:4066447319576",
+      "off:4006643135679",
+      "off:4056489822462",
+      "off:4260390241629",
+      "off:4066447603293",
+      "off:4260697371524",
+      "off:4260044265056",
+      "off:4061459617658",
+      "off:4068134024442"
+     ]
+    },
+    {
+     "id": "q024",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 10.63132381439209,
+     "retrieved": [
+      "off:4260593957525",
+      "off:4260744953376",
+      "off:4029679900004",
+      "off:4260744953840",
+      "off:4260744953819",
+      "off:4061289001566",
+      "off:4260644585813",
+      "off:4260593955651",
+      "off:4250519668635",
+      "off:4260701924920"
+     ]
+    },
+    {
+     "id": "q025",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 4.674427509307861,
+     "retrieved": [
+      "off:4000194901257",
+      "off:4029679900004",
+      "off:4260593957525",
+      "off:4061289001566",
+      "off:4260648136011",
+      "off:4335619268494",
+      "off:4260446586148",
+      "off:4006643131275",
+      "off:4061459617658",
+      "off:4250519668635"
+     ]
+    },
+    {
+     "id": "q026",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 7.964133262634277,
+     "retrieved": [
+      "off:5060119293309",
+      "off:4260644048783",
+      "off:4255582815078",
+      "off:0722252387646",
+      "off:4029679996984",
+      "off:4250519677033",
+      "off:4260648135632",
+      "off:4061289003553",
+      "off:5391532124162",
+      "off:96103890"
+     ]
+    },
+    {
+     "id": "q027",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 2.9937562942504883,
+     "retrieved": [
+      "off:4262426520302",
+      "off:4280001939622",
+      "off:4280001939318",
+      "off:4066447603293",
+      "off:4002971320305",
+      "off:4260426832104",
+      "off:4068134024312",
+      "off:4066447603316",
+      "off:4061459617658",
+      "off:4066447731491"
+     ]
+    },
+    {
+     "id": "q028",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 3.301184892654419,
+     "retrieved": [
+      "off:4260044260860",
+      "off:4260044264455",
+      "off:4260044269337",
+      "off:4260044262499",
+      "off:4311596637393",
+      "off:4061462220104",
+      "off:4008391213357",
+      "off:4056489838210",
+      "off:4036554703629",
+      "off:4029679680708"
+     ]
+    },
+    {
+     "id": "q029",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 9.77171516418457,
+     "retrieved": [
+      "off:5056307356390",
+      "off:5055534302903",
+      "off:4006643131275",
+      "off:4260644585813",
+      "off:4260701927105",
+      "off:4250519668635",
+      "off:4260446586148",
+      "off:4029679900004",
+      "off:4066447423068",
+      "off:5055534314890"
+     ]
+    },
+    {
+     "id": "q030",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 4.737339973449707,
+     "retrieved": [
+      "off:4250519652863",
+      "off:4250519646527",
+      "off:4250519646565",
+      "off:4061459895698",
+      "off:4250519646534",
+      "off:4250519668222",
+      "off:4250519677033",
+      "off:4250519668635",
+      "off:4250519600185",
+      "off:4250519652078"
+     ]
+    },
+    {
+     "id": "q031",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 4.853733062744141,
+     "retrieved": [
+      "off:4260640858072",
+      "off:4250031354269",
+      "off:4029679996885",
+      "off:4029679999572",
+      "off:4056489884903",
+      "off:4260644580139",
+      "off:4250519668222",
+      "off:4260744953840",
+      "off:4061289007469",
+      "off:4056489884859"
+     ]
+    },
+    {
+     "id": "q032",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 5.088362216949463,
+     "retrieved": [
+      "off:5056281162017",
+      "off:4066447530629",
+      "off:4006643010952",
+      "off:5059883177526",
+      "off:4056489822462",
+      "off:4067796105711",
+      "off:4068134024152",
+      "off:9066001445500",
+      "off:4260044262499",
+      "off:4029679550018"
+     ]
+    },
+    {
+     "id": "q033",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 7.976553916931152,
+     "retrieved": [
+      "off:4056489887058",
+      "off:4056489887034",
+      "off:4056489789871",
+      "off:4056489884842",
+      "off:4056489884873",
+      "off:4056489822455",
+      "off:4056489822431",
+      "off:4056489291015",
+      "off:4056489038610",
+      "off:4056489130758"
+     ]
+    },
+    {
+     "id": "q034",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 10.211467742919922,
+     "retrieved": [
+      "off:4056489884873",
+      "off:4056489884866",
+      "off:4056489704799",
+      "off:4260648131269",
+      "off:4056489207078",
+      "off:4260648131252",
+      "off:20035594",
+      "off:4056489038597",
+      "off:4260648136011",
+      "off:4056489038603"
+     ]
+    },
+    {
+     "id": "q035",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 5.0857672691345215,
+     "retrieved": [
+      "off:4056489704782",
+      "off:4056489038597",
+      "off:4260648134291",
+      "off:4061463697141",
+      "off:4068134039873",
+      "off:4068134024428",
+      "off:4008391213869",
+      "off:4008391213890",
+      "off:4260697372491",
+      "off:4066447704686"
+     ]
+    },
+    {
+     "id": "q036",
+     "type": "product",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": false,
+     "top1_score": 1.3950746059417725,
+     "retrieved": [
+      "off:4029679680142",
+      "off:4056489997665",
+      "off:4029679996984",
+      "off:8410076900319",
+      "off:4088600560298",
+      "off:8410076610423",
+      "off:7340001807141",
+      "off:4305615883823",
+      "off:7340001804751",
+      "off:4260562940268"
+     ]
+    },
+    {
+     "id": "q037",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 6.196568012237549,
+     "retrieved": [
+      "off:4029679680388",
+      "off:0686207801666",
+      "off:4260644585509",
+      "off:4260644585554",
+      "off:4260446586148",
+      "off:4255582813234",
+      "off:4255582812510",
+      "off:4260644585233",
+      "off:4029679999572",
+      "off:4056489822462"
+     ]
+    },
+    {
+     "id": "q038",
+     "type": "product",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 8.607871055603027,
+     "retrieved": [
+      "off:4250031353712",
+      "off:4061459622409",
+      "off:4066447319613",
+      "off:4068134024428",
+      "off:4056489789864",
+      "off:4066447600988",
+      "off:4061463697288",
+      "off:4058172969386",
+      "off:4067796105711",
+      "off:4066447731491"
+     ]
+    },
+    {
+     "id": "q039",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 1.7653203010559082,
+     "retrieved": [
+      "off:7340001804898",
+      "off:7340001807141",
+      "off:7340001804751",
+      "off:7340001806649",
+      "off:42454137",
+      "off:7340001803600",
+      "off:5711953068881",
+      "off:7340001804553",
+      "off:4056489887034",
+      "off:4311501072882"
+     ]
+    },
+    {
+     "id": "q040",
+     "type": "product",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 10.774178504943848,
+     "retrieved": [
+      "off:4068134024299",
+      "off:4068134024282",
+      "off:4068134024398",
+      "off:4068134024435",
+      "off:4068134024329",
+      "off:4068134024275",
+      "off:4305615883823",
+      "off:4068134024152",
+      "off:4311596014682",
+      "off:4068134024206"
+     ]
+    },
+    {
+     "id": "q041",
+     "type": "combined",
+     "lang": "en",
+     "rank": 2,
+     "all_gold_in_top5": false,
+     "top1_score": -1.1558928489685059,
+     "retrieved": [
+      "off:4061459622409",
+      "off:4061459780260",
+      "off:4061459617658",
+      "off:4061459780307",
+      "off:4061459622348",
+      "off:5056307356390",
+      "off:4260289446531",
+      "off:7640151710071",
+      "off:4260363480871",
+      "off:4029679995727"
+     ]
+    },
+    {
+     "id": "q042",
+     "type": "combined",
+     "lang": "en",
+     "rank": 2,
+     "all_gold_in_top5": true,
+     "top1_score": -0.17596587538719177,
+     "retrieved": [
+      "off:4002971336504",
+      "off:4335619113398",
+      "sample-allergens#milk-and-lactose",
+      "off:42454137",
+      "off:5056307356390",
+      "off:4056489618140",
+      "off:5711953081330",
+      "off:4061462138294",
+      "off:20035563",
+      "off:4255582813234"
+     ]
+    },
+    {
+     "id": "q043",
+     "type": "combined",
+     "lang": "de",
+     "rank": 2,
+     "all_gold_in_top5": false,
+     "top1_score": -0.282693088054657,
+     "retrieved": [
+      "off:4068134024428",
+      "off:4068134024299",
+      "off:4068134024282",
+      "off:4068134024312",
+      "off:4305615986463",
+      "off:4068134024442",
+      "off:4068134024350",
+      "off:4066447731491",
+      "off:2200220255480",
+      "off:4061462220104"
+     ]
+    },
+    {
+     "id": "q044",
+     "type": "combined",
+     "lang": "de",
+     "rank": 1,
+     "all_gold_in_top5": false,
+     "top1_score": 0.8144837617874146,
+     "retrieved": [
+      "off:4260556631943",
+      "off:4067796183719",
+      "off:4061462220104",
+      "off:4061461683818",
+      "off:4066447674057",
+      "off:4311596660988",
+      "off:4061459622348",
+      "off:4066447083972",
+      "off:2200220255480",
+      "off:4068134024411"
+     ]
+    },
+    {
+     "id": "q045",
+     "type": "combined",
+     "lang": "en",
+     "rank": 1,
+     "all_gold_in_top5": true,
+     "top1_score": 1.7902534008026123,
+     "retrieved": [
+      "off:0722252387479",
+      "sample-allergens#gluten",
+      "off:0722252387646",
+      "off:4056489789864",
+      "off:4250031353712",
+      "off:8595657104383",
+      "off:4260363487214",
+      "off:0686207801666",
+      "off:5060925291285",
+      "off:4260562940268"
+     ]
+    },
+    {
+     "id": "q046",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -5.4268107414245605,
+     "retrieved": [
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#refunds",
+      "sample-returns#how-to-return",
+      "sample-returns#opened-products",
+      "sample-returns#return-window",
+      "sample-shipping#delivery-times",
+      "sample-shipping#delivery-countries",
+      "sample-shipping#shipping-costs",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-shipping#lost-parcels"
+     ]
+    },
+    {
+     "id": "q047",
+     "type": "unanswerable",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -4.799055099487305,
+     "retrieved": [
+      "off:4255719312302",
+      "off:4250031354252",
+      "off:4061459471816",
+      "off:4311596660988",
+      "off:4066447603316",
+      "off:4056489884927",
+      "off:4061463697288",
+      "off:4260697371524",
+      "off:4068134039873",
+      "off:0722252387646"
+     ]
+    },
+    {
+     "id": "q048",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -4.709636211395264,
+     "retrieved": [
+      "sample-shipping#delivery-times",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-returns#return-window",
+      "sample-returns#refunds",
+      "sample-shipping#lost-parcels",
+      "off:4255719312302",
+      "off:5060925291285",
+      "sample-returns#how-to-return",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "off:5060925290875"
+     ]
+    },
+    {
+     "id": "q049",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -0.7256271839141846,
+     "retrieved": [
+      "off:20035563",
+      "off:4250031354733",
+      "off:4260363487214",
+      "off:4056489388685",
+      "off:4250031353712",
+      "off:8718774021573",
+      "off:7340001807141",
+      "off:20035525",
+      "off:4056489130758",
+      "off:4056489038597"
+     ]
+    },
+    {
+     "id": "q050",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 2.808992624282837,
+     "retrieved": [
+      "off:4262426520302",
+      "off:4280001939622",
+      "off:4280001939318",
+      "off:4066447530629",
+      "off:4006643010952",
+      "off:7340001804898",
+      "off:4335619267725",
+      "off:4066447603293",
+      "off:4002971320305",
+      "off:4260701926733"
+     ]
+    },
+    {
+     "id": "q051",
+     "type": "unanswerable",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -6.613858699798584,
+     "retrieved": [
+      "off:4066447319576",
+      "off:4061462220104",
+      "off:4061459471816",
+      "off:4316268602587",
+      "off:4036554703605",
+      "off:4066447319590",
+      "off:4066447257625",
+      "off:2200220255480",
+      "off:4066447600988",
+      "off:4066447704686"
+     ]
+    },
+    {
+     "id": "q052",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -6.6941094398498535,
+     "retrieved": [
+      "sample-returns#refunds",
+      "sample-shipping#delivery-times",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#shipping-costs",
+      "sample-returns#how-to-return",
+      "sample-returns#return-window",
+      "sample-returns#opened-products",
+      "sample-shipping#lost-parcels",
+      "off:4260648132440",
+      "sample-shipping#delivery-countries"
+     ]
+    },
+    {
+     "id": "q053",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -3.905914783477783,
+     "retrieved": [
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#delivery-times",
+      "sample-returns#refunds",
+      "sample-shipping#lost-parcels",
+      "sample-shipping#delivery-countries",
+      "sample-returns#return-window",
+      "sample-shipping#shipping-costs",
+      "sample-allergens#we-do-not-give-medical-advice",
+      "sample-shipping#heat-sensitive-products",
+      "off:5059883177526"
+     ]
+    },
+    {
+     "id": "q054",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -5.777328968048096,
+     "retrieved": [
+      "sample-shipping#delivery-times",
+      "sample-shipping#delivery-countries",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-shipping#lost-parcels",
+      "sample-returns#return-window",
+      "sample-allergens#declared-allergens-and-traces",
+      "off:5060469985206",
+      "off:5391532124254",
+      "off:5999076236718",
+      "sample-returns#refunds"
+     ]
+    },
+    {
+     "id": "q055",
+     "type": "unanswerable",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -6.27123498916626,
+     "retrieved": [
+      "sample-returns#opened-products",
+      "sample-returns#refunds",
+      "sample-returns#return-window",
+      "sample-returns#how-to-return",
+      "off:4260363487214",
+      "sample-returns#faulty-or-damaged-products",
+      "sample-allergens#declared-allergens-and-traces",
+      "off:8595657104383",
+      "off:4250031354726",
+      "off:5060088707661"
+     ]
+    },
+    {
+     "id": "q056",
+     "type": "aggregate",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": 3.835057020187378,
+     "retrieved": [
+      "off:4056489884859",
+      "off:4056489884903",
+      "off:4260640858072",
+      "off:4068134024398",
+      "off:4260701927563",
+      "off:0193908007926",
+      "off:4260744953819",
+      "off:4250031354726",
+      "off:4029679996885",
+      "off:4260744953840"
+     ]
+    },
+    {
+     "id": "q057",
+     "type": "aggregate",
+     "lang": "de",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -1.9766294956207275,
+     "retrieved": [
+      "off:4061459471816",
+      "off:4260556631943",
+      "off:4061463697141",
+      "off:4061462220104",
+      "off:4068134024428",
+      "off:4036554703636",
+      "off:4061461683818",
+      "off:2200277856906",
+      "off:4066447257625",
+      "off:4066447600988"
+     ]
+    },
+    {
+     "id": "q058",
+     "type": "aggregate",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -0.06425701081752777,
+     "retrieved": [
+      "off:4260718291398",
+      "off:3800233780611",
+      "off:4260648131665",
+      "off:4066447603330",
+      "off:4260390243852",
+      "off:4068134024190",
+      "off:4029679999572",
+      "off:42454113",
+      "off:9066001445500",
+      "off:4260701927105"
+     ]
+    },
+    {
+     "id": "q059",
+     "type": "aggregate",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -1.040972113609314,
+     "retrieved": [
+      "off:4029679996885",
+      "off:4260562940268",
+      "off:4260562940237",
+      "off:4260648135632",
+      "off:5056357999707",
+      "off:5060811384466",
+      "off:4260644580139",
+      "off:4029679854796",
+      "off:4250519646534",
+      "off:4056489130741"
+     ]
+    },
+    {
+     "id": "q060",
+     "type": "aggregate",
+     "lang": "en",
+     "rank": null,
+     "all_gold_in_top5": null,
+     "top1_score": -1.2065526247024536,
+     "retrieved": [
+      "off:4260044268026",
+      "off:4056489887027",
+      "off:4260648136011",
+      "off:4260363487214",
+      "off:4250031353712",
+      "off:4066447603293",
+      "off:4029679996953",
+      "off:4067796146875",
+      "off:5059883177526",
+      "off:20035594"
+     ]
+    }
+   ]
+  }
+ ]
+}
