@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T16:58:32.089Z",
+  "updatedAt": "2026-09-23T17:43:12.595Z",
   "createdAt": "2026-09-23T13:24:29.235Z",
   "id": "QvHrO0gVwDK1KBH2",
   "name": "kb_assistant",
@@ -19,7 +19,7 @@
       "typeVersion": 2.1,
       "position": [
         0,
-        0
+        288
       ],
       "id": "70bab3c0-9f77-4ea2-a0ef-0f00e92b91d9",
       "name": "Webhook",
@@ -50,7 +50,7 @@
       "typeVersion": 3.5,
       "position": [
         224,
-        0
+        288
       ],
       "id": "076861a5-6802-4526-8ded-ada93e44084a",
       "name": "Set run_id"
@@ -67,7 +67,7 @@
       "typeVersion": 1.5,
       "position": [
         448,
-        0
+        288
       ],
       "id": "d5925863-941d-4f41-bfa5-0fc74a6c51f3",
       "name": "Respond to Webhook"
@@ -85,7 +85,7 @@
       "typeVersion": 4.5,
       "position": [
         672,
-        0
+        288
       ],
       "id": "a7fc230a-f353-4312-8eff-8cf2f974db9f",
       "name": "Redact"
@@ -102,7 +102,7 @@
       "typeVersion": 2.7,
       "position": [
         896,
-        0
+        288
       ],
       "id": "66e8ad37-89da-4478-a2b8-1559db28f586",
       "name": "Audit: received",
@@ -125,8 +125,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        0,
-        256
+        1120,
+        288
       ],
       "id": "63eb5483-5b40-420e-98bb-c419ae56f0f7",
       "name": "Search"
@@ -158,8 +158,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        224,
-        256
+        1344,
+        288
       ],
       "id": "2bbd5ea9-309c-482b-9585-2422d2e18a78",
       "name": "Low confidence?"
@@ -187,8 +187,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        448,
-        240
+        1744,
+        432
       ],
       "id": "3b9a0030-a100-4873-a191-0abdd3267097",
       "name": "Cannot answer"
@@ -202,8 +202,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.7,
       "position": [
-        288,
-        592
+        0,
+        896
       ],
       "id": "12ddeb2e-522b-4576-acf3-77184c7bb3e2",
       "name": "Budget",
@@ -242,34 +242,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        512,
-        592
+        224,
+        896
       ],
       "id": "261d9aaa-c995-4fcb-9632-cc3144c117d3",
       "name": "Budget OK?"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'budget_blocked', 'system', $2::jsonb)",
-        "options": {
-          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ spent_today_usd: $json.spent_today_usd, daily_cap_usd: $json.daily_cap_usd }) ] }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.7,
-      "position": [
-        672,
-        832
-      ],
-      "id": "518a0ed3-848c-47aa-86d4-13025cfef5bb",
-      "name": "Audit: budget blocked:",
-      "credentials": {
-        "postgres": {
-          "id": "Fmq0v9Fv5ZezCdsK",
-          "name": "kb (n8n_app)"
-        }
-      }
     },
     {
       "parameters": {
@@ -278,8 +255,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        752,
-        576
+        448,
+        800
       ],
       "id": "d9bd259e-b377-4b01-be29-917cb42d0c4f",
       "name": "Build prompt"
@@ -308,8 +285,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        1184,
-        576
+        896,
+        800
       ],
       "id": "6ba90401-db77-4084-a7fa-22a3b7c86a25",
       "name": "Draft"
@@ -326,8 +303,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        1584,
-        576
+        1344,
+        800
       ],
       "id": "6acd30f0-0777-41c2-acad-c44ef12e0459",
       "name": "Claims check"
@@ -346,38 +323,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        976,
-        576
+        672,
+        800
       ],
       "id": "2b7fa716-e3f5-4be3-8d18-e175c6c36cc5",
       "name": "LLM Draft",
       "credentials": {
         "httpHeaderAuth": {
           "id": "lO7w7SdKxcN74eDd",
-          "name": "Header Auth account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'drafted', 'system', $2::jsonb)",
-        "options": {
-          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ model: $('Draft').item.json.model, cost_usd: $('Log model call').item.json.cost_usd, flagged_claims: $json.flagged_count }) ] }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.7,
-      "position": [
-        1776,
-        576
-      ],
-      "id": "bd54b28f-e2ff-4993-bef0-cc1d8b64db37",
-      "name": "Audit : drafted",
-      "credentials": {
-        "postgres": {
-          "id": "Fmq0v9Fv5ZezCdsK",
-          "name": "kb (n8n_app)"
+          "name": "groq api key"
         }
       }
     },
@@ -392,8 +346,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.7,
       "position": [
-        1376,
-        576
+        1120,
+        800
       ],
       "id": "4a7c49fe-1fb0-4aea-bf63-b1e50c708ff7",
       "name": "Log model call",
@@ -427,8 +381,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        1968,
-        576
+        1744,
+        624
       ],
       "id": "63451370-6093-48bd-becb-43dbe5648fb7",
       "name": "Draft for approval"
@@ -438,8 +392,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        752,
-        224
+        1968,
+        528
       ],
       "id": "4e2816c2-a1cd-46bc-80e9-1fe29ab829e8",
       "name": "Approval input"
@@ -462,8 +416,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        976,
-        224
+        2192,
+        528
       ],
       "id": "8cd1c5c2-4b5a-4660-9b12-3775d8c379e8",
       "name": "Approval link"
@@ -479,8 +433,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.7,
       "position": [
-        1200,
-        224
+        2416,
+        528
       ],
       "id": "93bdd08d-af75-468a-ad16-3535bd4bdf20",
       "name": "Audit: approval requested",
@@ -502,8 +456,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1424,
-        224
+        2640,
+        528
       ],
       "id": "208de1fe-6064-456e-a0a2-2a8199c1a21d",
       "name": "Approval",
@@ -537,8 +491,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1648,
-        224
+        3312,
+        432
       ],
       "id": "95ec3c6c-e7e9-49a0-8ef5-5c6551e95266",
       "name": "Approved?"
@@ -554,8 +508,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.7,
       "position": [
-        1872,
-        128
+        3536,
+        336
       ],
       "id": "9c8902ae-f77e-475b-999d-4d7a68eafb50",
       "name": "Audit: approved",
@@ -577,8 +531,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.7,
       "position": [
-        1872,
-        320
+        3536,
+        528
       ],
       "id": "c997853b-b93e-442d-bd6a-23e38186da91",
       "name": "Audit: rejected",
@@ -600,8 +554,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.7,
       "position": [
-        2096,
-        128
+        3760,
+        336
       ],
       "id": "69aed847-dd5b-4f47-b5f7-63acdd035397",
       "name": "Sent",
@@ -611,6 +565,132 @@
           "name": "kb (n8n_app)"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'drafted', 'system', $2::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ model: $('Draft').item.json.model, cost_usd: $('Log model call').item.json.cost_usd, flagged_claims: $json.flagged_count }) ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        1568,
+        800
+      ],
+      "id": "bd54b28f-e2ff-4993-bef0-cc1d8b64db37",
+      "name": "Audit: drafted",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'budget_blocked', 'system', $2::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ spent_today_usd: $json.spent_today_usd, daily_cap_usd: $json.daily_cap_usd }) ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        448,
+        992
+      ],
+      "id": "518a0ed3-848c-47aa-86d4-13025cfef5bb",
+      "name": "Audit: budget blocked",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT check_approval($1, $2, $3) AS verdict",
+        "options": {
+          "queryReplacement": "={{ [ $json.body.approver, $json.body.approval_key, $('Set run_id').item.json.body.customer_email ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        2864,
+        528
+      ],
+      "id": "acc1a39e-4102-4411-8051-90bbaed3d700",
+      "name": "Check approval",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, $2, $3, '{}'::jsonb)",
+        "options": {
+          "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, $json.verdict, $('Approval').item.json.body.approver ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        3312,
+        624
+      ],
+      "id": "70d359ff-bf9d-4cc9-ab26-53e6491a0345",
+      "name": "Audit: approval refused",
+      "credentials": {
+        "postgres": {
+          "id": "Fmq0v9Fv5ZezCdsK",
+          "name": "kb (n8n_app)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c9fae4e0-fc55-4dc5-81cf-3a45c95814ad",
+              "leftValue": "={{ $json.verdict }}",
+              "rightValue": "ok",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3088,
+        528
+      ],
+      "id": "4a97cde6-9de8-4d9c-94c8-ac35ba8ce319",
+      "name": "Approval valid?"
     }
   ],
   "connections": {
@@ -720,7 +800,7 @@
         ],
         [
           {
-            "node": "Audit: budget blocked:",
+            "node": "Audit: budget blocked",
             "type": "main",
             "index": 0
           }
@@ -753,7 +833,7 @@
       "main": [
         [
           {
-            "node": "Audit : drafted",
+            "node": "Audit: drafted",
             "type": "main",
             "index": 0
           }
@@ -776,17 +856,6 @@
         [
           {
             "node": "Claims check",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Audit : drafted": {
-      "main": [
-        [
-          {
-            "node": "Draft for approval",
             "type": "main",
             "index": 0
           }
@@ -852,7 +921,7 @@
       "main": [
         [
           {
-            "node": "Approved?",
+            "node": "Check approval",
             "type": "main",
             "index": 0
           }
@@ -887,6 +956,46 @@
           }
         ]
       ]
+    },
+    "Audit: drafted": {
+      "main": [
+        [
+          {
+            "node": "Draft for approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check approval": {
+      "main": [
+        [
+          {
+            "node": "Approval valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval valid?": {
+      "main": [
+        [
+          {
+            "node": "Approved?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit: approval refused",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -903,9 +1012,9 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "377c88b1-2909-4a83-97f6-37f7ab990d14",
-  "activeVersionId": "377c88b1-2909-4a83-97f6-37f7ab990d14",
-  "versionCounter": 239,
+  "versionId": "7642a091-815e-4669-a3fe-889c4393decb",
+  "activeVersionId": "7642a091-815e-4669-a3fe-889c4393decb",
+  "versionCounter": 323,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "shared": [
@@ -931,9 +1040,9 @@
   "tags": [],
   "parentFolder": null,
   "activeVersion": {
-    "updatedAt": "2026-09-23T17:00:39.152Z",
-    "createdAt": "2026-09-23T16:48:56.810Z",
-    "versionId": "377c88b1-2909-4a83-97f6-37f7ab990d14",
+    "updatedAt": "2026-09-23T18:05:42.094Z",
+    "createdAt": "2026-09-23T17:43:12.597Z",
+    "versionId": "7642a091-815e-4669-a3fe-889c4393decb",
     "workflowId": "QvHrO0gVwDK1KBH2",
     "nodes": [
       {
@@ -948,7 +1057,7 @@
         "typeVersion": 2.1,
         "position": [
           0,
-          0
+          288
         ],
         "id": "70bab3c0-9f77-4ea2-a0ef-0f00e92b91d9",
         "name": "Webhook",
@@ -979,7 +1088,7 @@
         "typeVersion": 3.5,
         "position": [
           224,
-          0
+          288
         ],
         "id": "076861a5-6802-4526-8ded-ada93e44084a",
         "name": "Set run_id"
@@ -996,7 +1105,7 @@
         "typeVersion": 1.5,
         "position": [
           448,
-          0
+          288
         ],
         "id": "d5925863-941d-4f41-bfa5-0fc74a6c51f3",
         "name": "Respond to Webhook"
@@ -1014,7 +1123,7 @@
         "typeVersion": 4.5,
         "position": [
           672,
-          0
+          288
         ],
         "id": "a7fc230a-f353-4312-8eff-8cf2f974db9f",
         "name": "Redact"
@@ -1031,7 +1140,7 @@
         "typeVersion": 2.7,
         "position": [
           896,
-          0
+          288
         ],
         "id": "66e8ad37-89da-4478-a2b8-1559db28f586",
         "name": "Audit: received",
@@ -1054,8 +1163,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.5,
         "position": [
-          0,
-          256
+          1120,
+          288
         ],
         "id": "63eb5483-5b40-420e-98bb-c419ae56f0f7",
         "name": "Search"
@@ -1087,8 +1196,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
-          224,
-          256
+          1344,
+          288
         ],
         "id": "2bbd5ea9-309c-482b-9585-2422d2e18a78",
         "name": "Low confidence?"
@@ -1116,8 +1225,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.5,
         "position": [
-          448,
-          240
+          1744,
+          432
         ],
         "id": "3b9a0030-a100-4873-a191-0abdd3267097",
         "name": "Cannot answer"
@@ -1131,8 +1240,8 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.7,
         "position": [
-          288,
-          592
+          0,
+          896
         ],
         "id": "12ddeb2e-522b-4576-acf3-77184c7bb3e2",
         "name": "Budget",
@@ -1171,34 +1280,11 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
-          512,
-          592
+          224,
+          896
         ],
         "id": "261d9aaa-c995-4fcb-9632-cc3144c117d3",
         "name": "Budget OK?"
-      },
-      {
-        "parameters": {
-          "operation": "executeQuery",
-          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'budget_blocked', 'system', $2::jsonb)",
-          "options": {
-            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ spent_today_usd: $json.spent_today_usd, daily_cap_usd: $json.daily_cap_usd }) ] }}"
-          }
-        },
-        "type": "n8n-nodes-base.postgres",
-        "typeVersion": 2.7,
-        "position": [
-          672,
-          832
-        ],
-        "id": "518a0ed3-848c-47aa-86d4-13025cfef5bb",
-        "name": "Audit: budget blocked:",
-        "credentials": {
-          "postgres": {
-            "id": "Fmq0v9Fv5ZezCdsK",
-            "name": "kb (n8n_app)"
-          }
-        }
       },
       {
         "parameters": {
@@ -1207,8 +1293,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          752,
-          576
+          448,
+          800
         ],
         "id": "d9bd259e-b377-4b01-be29-917cb42d0c4f",
         "name": "Build prompt"
@@ -1237,8 +1323,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.5,
         "position": [
-          1184,
-          576
+          896,
+          800
         ],
         "id": "6ba90401-db77-4084-a7fa-22a3b7c86a25",
         "name": "Draft"
@@ -1255,8 +1341,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.5,
         "position": [
-          1584,
-          576
+          1344,
+          800
         ],
         "id": "6acd30f0-0777-41c2-acad-c44ef12e0459",
         "name": "Claims check"
@@ -1275,38 +1361,15 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.5,
         "position": [
-          976,
-          576
+          672,
+          800
         ],
         "id": "2b7fa716-e3f5-4be3-8d18-e175c6c36cc5",
         "name": "LLM Draft",
         "credentials": {
           "httpHeaderAuth": {
             "id": "lO7w7SdKxcN74eDd",
-            "name": "Header Auth account 2"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "operation": "executeQuery",
-          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'drafted', 'system', $2::jsonb)",
-          "options": {
-            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ model: $('Draft').item.json.model, cost_usd: $('Log model call').item.json.cost_usd, flagged_claims: $json.flagged_count }) ] }}"
-          }
-        },
-        "type": "n8n-nodes-base.postgres",
-        "typeVersion": 2.7,
-        "position": [
-          1776,
-          576
-        ],
-        "id": "bd54b28f-e2ff-4993-bef0-cc1d8b64db37",
-        "name": "Audit : drafted",
-        "credentials": {
-          "postgres": {
-            "id": "Fmq0v9Fv5ZezCdsK",
-            "name": "kb (n8n_app)"
+            "name": "groq api key"
           }
         }
       },
@@ -1321,8 +1384,8 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.7,
         "position": [
-          1376,
-          576
+          1120,
+          800
         ],
         "id": "4a7c49fe-1fb0-4aea-bf63-b1e50c708ff7",
         "name": "Log model call",
@@ -1356,8 +1419,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.5,
         "position": [
-          1968,
-          576
+          1744,
+          624
         ],
         "id": "63451370-6093-48bd-becb-43dbe5648fb7",
         "name": "Draft for approval"
@@ -1367,8 +1430,8 @@
         "type": "n8n-nodes-base.merge",
         "typeVersion": 3.2,
         "position": [
-          752,
-          224
+          1968,
+          528
         ],
         "id": "4e2816c2-a1cd-46bc-80e9-1fe29ab829e8",
         "name": "Approval input"
@@ -1391,8 +1454,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.5,
         "position": [
-          976,
-          224
+          2192,
+          528
         ],
         "id": "8cd1c5c2-4b5a-4660-9b12-3775d8c379e8",
         "name": "Approval link"
@@ -1408,8 +1471,8 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.7,
         "position": [
-          1200,
-          224
+          2416,
+          528
         ],
         "id": "93bdd08d-af75-468a-ad16-3535bd4bdf20",
         "name": "Audit: approval requested",
@@ -1431,8 +1494,8 @@
         "type": "n8n-nodes-base.wait",
         "typeVersion": 1.1,
         "position": [
-          1424,
-          224
+          2640,
+          528
         ],
         "id": "208de1fe-6064-456e-a0a2-2a8199c1a21d",
         "name": "Approval",
@@ -1466,8 +1529,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
-          1648,
-          224
+          3312,
+          432
         ],
         "id": "95ec3c6c-e7e9-49a0-8ef5-5c6551e95266",
         "name": "Approved?"
@@ -1483,8 +1546,8 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.7,
         "position": [
-          1872,
-          128
+          3536,
+          336
         ],
         "id": "9c8902ae-f77e-475b-999d-4d7a68eafb50",
         "name": "Audit: approved",
@@ -1506,8 +1569,8 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.7,
         "position": [
-          1872,
-          320
+          3536,
+          528
         ],
         "id": "c997853b-b93e-442d-bd6a-23e38186da91",
         "name": "Audit: rejected",
@@ -1529,8 +1592,8 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.7,
         "position": [
-          2096,
-          128
+          3760,
+          336
         ],
         "id": "69aed847-dd5b-4f47-b5f7-63acdd035397",
         "name": "Sent",
@@ -1540,6 +1603,132 @@
             "name": "kb (n8n_app)"
           }
         }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'drafted', 'system', $2::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ model: $('Draft').item.json.model, cost_usd: $('Log model call').item.json.cost_usd, flagged_claims: $json.flagged_count }) ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          1568,
+          800
+        ],
+        "id": "bd54b28f-e2ff-4993-bef0-cc1d8b64db37",
+        "name": "Audit: drafted",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, 'budget_blocked', 'system', $2::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, JSON.stringify({ spent_today_usd: $json.spent_today_usd, daily_cap_usd: $json.daily_cap_usd }) ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          448,
+          992
+        ],
+        "id": "518a0ed3-848c-47aa-86d4-13025cfef5bb",
+        "name": "Audit: budget blocked",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT check_approval($1, $2, $3) AS verdict",
+          "options": {
+            "queryReplacement": "={{ [ $json.body.approver, $json.body.approval_key, $('Set run_id').item.json.body.customer_email ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          2864,
+          528
+        ],
+        "id": "acc1a39e-4102-4411-8051-90bbaed3d700",
+        "name": "Check approval",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO audit_log (run_id, event, actor, details)\nVALUES ($1, $2, $3, '{}'::jsonb)",
+          "options": {
+            "queryReplacement": "={{ [ $('Set run_id').item.json.run_id, $json.verdict, $('Approval').item.json.body.approver ] }}"
+          }
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          3312,
+          624
+        ],
+        "id": "70d359ff-bf9d-4cc9-ab26-53e6491a0345",
+        "name": "Audit: approval refused",
+        "credentials": {
+          "postgres": {
+            "id": "Fmq0v9Fv5ZezCdsK",
+            "name": "kb (n8n_app)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "c9fae4e0-fc55-4dc5-81cf-3a45c95814ad",
+                "leftValue": "={{ $json.verdict }}",
+                "rightValue": "ok",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          3088,
+          528
+        ],
+        "id": "4a97cde6-9de8-4d9c-94c8-ac35ba8ce319",
+        "name": "Approval valid?"
       }
     ],
     "connections": {
@@ -1649,7 +1838,7 @@
           ],
           [
             {
-              "node": "Audit: budget blocked:",
+              "node": "Audit: budget blocked",
               "type": "main",
               "index": 0
             }
@@ -1682,7 +1871,7 @@
         "main": [
           [
             {
-              "node": "Audit : drafted",
+              "node": "Audit: drafted",
               "type": "main",
               "index": 0
             }
@@ -1705,17 +1894,6 @@
           [
             {
               "node": "Claims check",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Audit : drafted": {
-        "main": [
-          [
-            {
-              "node": "Draft for approval",
               "type": "main",
               "index": 0
             }
@@ -1781,7 +1959,7 @@
         "main": [
           [
             {
-              "node": "Approved?",
+              "node": "Check approval",
               "type": "main",
               "index": 0
             }
@@ -1816,19 +1994,59 @@
             }
           ]
         ]
+      },
+      "Audit: drafted": {
+        "main": [
+          [
+            {
+              "node": "Draft for approval",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check approval": {
+        "main": [
+          [
+            {
+              "node": "Approval valid?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Approval valid?": {
+        "main": [
+          [
+            {
+              "node": "Approved?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Audit: approval refused",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "nodeGroups": [],
     "authors": "Owner Owner4test",
-    "name": "V1",
-    "description": "",
+    "name": "V3",
+    "description": "Added user specific approval limits",
     "autosaved": true,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T17:00:39.150Z",
-        "id": 2,
+        "createdAt": "2026-09-23T18:05:42.092Z",
+        "id": 6,
         "workflowId": "QvHrO0gVwDK1KBH2",
-        "versionId": "377c88b1-2909-4a83-97f6-37f7ab990d14",
+        "versionId": "7642a091-815e-4669-a3fe-889c4393decb",
         "event": "activated",
         "userId": "33d65afa-8f00-4847-aaa6-453d6d43d611"
       }
@@ -1853,5 +2071,5 @@
     "workflow:unshare",
     "workflow:update"
   ],
-  "checksum": "fbc9da0f0274511cb46d929ba597bf275a0dfc44965430b142ffdb443a35a1b1"
+  "checksum": "f624522fd972497ea6773261073e3dad6d09045e5a97a05bb2333127fd96cc2b"
 }
