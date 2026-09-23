@@ -6,34 +6,38 @@ Demo domain: sports-nutrition products and shop policies. It is a portfolio proj
 
 ## Architecture
 
-```
-                 ┌──────────────────────── n8n (Docker) ────────────────────────┐
-  HTTP request   │                                                              │
-  ───────────────▶ Webhook ─▶ Respond 202 ─▶ ┌─────────────┐                     │
-   (header auth) │                           │  retrieval  │  ◀── Flask, host    │
-                 │                           │   service   │                     │
-                 │           /redact ────────▶   (Python)  │                     │
-                 │           /search ────────▶             ├──▶ PostgreSQL       │
-                 │      /claims-check ───────▶             │    + pgvector       │
-                 │                           └─────────────┘         ▲           │
-                 │                                                   │           │
-                 │   confidence gate ─▶ budget gate ─▶ LLM draft ─────┤           │
-                 │        │                  │         (external)     │           │
-                 │        │                  │              │         │           │
-                 │        ▼                  ▼              ▼         │           │
-                 │   "cannot answer"   budget_blocked   model_calls   │           │
-                 │        │                                           │           │
-                 │        └────────▶ human approval (Wait) ───────────┤ audit_log │
-                 │                     │        │                     │ (append-  │
-                 │              approved│        │rejected / denied    │  only)    │
-                 │                     ▼        ▼                     │           │
-                 │                   send    stop ────────────────────┘           │
-                 │                                                                │
-                 │   any failure ─▶ kb-error-handler ─▶ audit_log: error          │
-                 └────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    REQ([Customer question]) -->|POST, header auth| WH["n8n Webhook"]
+    WH --> RESP["Respond 202<br/>answer comes later by email"]
+    WH --> RED["/redact<br/>email, IBAN, card, phone"]
+    RED --> A1[("audit: request_received")]
+    RED --> SRCH["/search<br/>pgvector + rerank, k=5"]
+    SRCH --> CONF{"Retrieval<br/>confident?"}
+    CONF -->|no| CANT["Templated<br/>cannot answer"]
+    CONF -->|yes| BUD{"Under daily<br/>cost cap?"}
+    BUD -->|no| A2[("audit: budget_blocked")]
+    BUD -->|yes| LLM["LLM draft with citations<br/>external API"]
+    LLM --> COST[("model_calls:<br/>tokens + cost")]
+    COST --> CLAIM["/claims-check<br/>vs EU register"]
+    CLAIM --> A3[("audit: drafted")]
+    A3 --> WAIT["Human approval<br/>n8n Wait node"]
+    CANT --> WAIT
+    WAIT --> CHK{"check_approval()<br/>listed? key? not self?"}
+    CHK -->|no| A4[("audit: approval_denied /<br/>self_approval_denied")]
+    CHK -->|yes| DEC{"Approved?"}
+    DEC -->|rejected| A5[("audit: rejected")]
+    DEC -->|approved| SEND["Send reply"] --> A6[("audit: approved, sent")]
+    ERR["Any node fails"] --> EW["kb-error-handler"] --> A7[("audit: error")]
+
+    subgraph local[" Runs locally — nothing leaves the machine "]
+        RED
+        SRCH
+        CLAIM
+    end
 ```
 
-Retrieval, embeddings and reranking run locally. Only the drafting step calls an external API, and only with redacted text.
+Retrieval, embeddings and reranking run locally against PostgreSQL + pgvector. Only the drafting step calls an external API, and only with redacted text. Every `audit:` box is an append-only row that n8n's database role can insert but never change.
 
 ## What it does
 
